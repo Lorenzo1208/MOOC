@@ -8,13 +8,11 @@ def factorielle(n):
     return result
 
 def recur_message(msg, f, parent_id=None, thread_id=None):
-    '''
-    Cette fonction fait un traitement messages de l'objet JSON passé
-    :param obj: objet JSON contiens un MESSAGE
-    :param f: fonctions à appeler
-    :return:
-    '''
+
     f(msg, parent_id, thread_id)
+    
+
+
     if 'children' in msg:
         for child in msg['children']:
             recur_message(child, f, parent_id=msg['id'], thread_id=thread_id)
@@ -24,6 +22,8 @@ def recur_message(msg, f, parent_id=None, thread_id=None):
     if 'endorsed_responses' in msg:
         for child in msg['endorsed_responses']:
             recur_message(child, f, parent_id=msg['id'], thread_id=thread_id)
+
+
 
 
 def nombre_messages(obj):
