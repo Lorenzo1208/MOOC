@@ -4,14 +4,14 @@ import json
 
 # Mise en place du tunnel SSH
 with sshtunnel.open_tunnel(
-    ('20.19.186.59', 22),
-    ssh_username='gretag4',
-    ssh_password='Greta2023!g4',
-    remote_bind_address=('172.17.0.2', 27017)
+    ('datalab.myconnectech.fr', 22),
+    ssh_username='gurgoglione',
+    ssh_password='f946c9aa6f3385c666a4f527a2b8ec667b5669792af488ae9e83a312c6f7b053',
+    remote_bind_address=('docker-mongo', 27017)
 ) as tunnel:
     # Connexion à la base MongoDB à travers le tunnel
     client = pymongo.MongoClient('localhost', tunnel.local_bind_port)
-    db = client['MOOC']
+    db = client['g4-MOOC']
     user_collection = db['user']
     forum_collection = db['forum']
     
