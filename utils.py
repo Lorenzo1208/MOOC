@@ -10,8 +10,6 @@ def factorielle(n):
 def recur_message(msg, f, parent_id=None, thread_id=None):
 
     f(msg, parent_id, thread_id)
-    
-
 
     if 'children' in msg:
         for child in msg['children']:
