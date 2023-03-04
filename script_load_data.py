@@ -13,7 +13,7 @@ user_collection = db["user"]
 
 # Extraire les données de la collection "forum" de MongoDB
 forum_data = forum_collection.find()
-user_data = user_collection.find()
+user_data = user_collection.find(batch_size=1000)
 
 # Connexion à la base MySQL
 mydb = mysql.connector.connect(
@@ -88,20 +88,20 @@ def add_thread(thread_id, title, course_id):
         # print("Utilisateur ajouté avec username: ", username, "et user_id: ", user_id)
         
         
-def fill_users_table():
-    for user in user_collection.find():
-        username = user.get('username')
-        if username is not None:
-            mycursor = mydb.cursor()
-            sql = "INSERT INTO users (username) VALUES (%s) ON DUPLICATE KEY UPDATE username=VALUES(username);"
-            val = (username,)
-            mycursor.execute(sql, val)
-            mydb.commit()
-            mycursor.execute("SELECT * FROM users")
-            result = mycursor.fetchall()
+# def fill_users_table():
+#     for user in user_collection.find(batch_size=1000):
+#         username = user.get('username')
+#         if username is not None:
+#             mycursor = mydb.cursor()
+#             sql = "INSERT INTO users (username) VALUES (%s) ON DUPLICATE KEY UPDATE username=VALUES(username);"
+#             val = (username,)
+#             mycursor.execute(sql, val)
+#             mydb.commit()
+#             mycursor.execute("SELECT * FROM users")
+#             result = mycursor.fetchall()
             
 
-fill_users_table()
+# fill_users_table()
 
 def add_message(msg, thread_id, username, parent_id, dt):
     mycursor = mydb.cursor()
@@ -147,40 +147,40 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
     # print("Recurse ", msg['id'], msg['depth'] if 'depth' in msg else '-', parent_id, dt)
 
     # Insertion dans la table course- si elle n'existe pas déjà
-    # add_course(course_id, opening_dates, msg)
+    add_course(course_id, opening_dates, msg)
 
     # Insertion des utilisateurs
     # add_user(msg)
-    fill_users_table()
+    # fill_users_table()
     
 
     # Insertion des threads
     # add_thread(thread_id, title, course_id)
 
     # Insertion des messages
-    # add_message(msg, thread_id, username, parent_id, dt)
+    add_message(msg, thread_id, username, parent_id, dt)
 
     # Insertion des résultats
-    # add_result(username, course_id, grade, city, country)
+    add_result(username, course_id, grade, city, country)
 
     # Récursivement, parcourir les enfants du message
     if 'children' in msg:
         for child in msg['children']:
             traitement(child, msg['id'])
 
-# for msg in forum_data:
-#     utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
+for msg in forum_data:
+    utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
 
-# for course in user_data:
-#     for key, value in course.items():
-#         if isinstance(value, dict) and 'grade' in value:
-#             grade = value['grade']
-#             username = course['username']
-#             course_id = key
-#             country = value['country'] if 'country' in course else None
-#             city = value['city'] if 'city' in course else None
-#             # print(f"Grade for {username} {course_id}: {grade}")
-#             add_result(username, course_id, grade, city, country)
+for course in user_data:
+    for key, value in course.items():
+        if isinstance(value, dict) and 'grade' in value:
+            grade = value['grade']
+            username = course['username']
+            course_id = key
+            country = value['country'] if 'country' in course else None
+            city = value['city'] if 'city' in course else None
+            # print(f"Grade for {username} {course_id}: {grade}")
+            add_result(username, course_id, grade, city, country)
 
 
 def export_table_to_csv(table_name):
