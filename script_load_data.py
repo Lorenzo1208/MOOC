@@ -73,19 +73,19 @@ def add_thread(thread_id, title, course_id):
     mydb.commit()
     # print("Thread ajouté avec titre: ", title, "et course_id: ", course_id)
 
-# def add_user(msg):
-#     if not msg['anonymous']:
-#         mycursor = mydb.cursor()
-#         username = get_username(msg)
-#         user_id = msg.get('user_id')
-#         if user_id is None:
-#             return  # ou lever une exception, selon le comportement souhaité
+def add_user(msg):
+    if not msg['anonymous']:
+        mycursor = mydb.cursor()
+        username = get_username(msg)
+        user_id = msg.get('user_id')
+        if user_id is None:
+            return  # ou lever une exception, selon le comportement souhaité
 
-#         sql = "INSERT INTO users (username, user_id) VALUES (%s,%s) ON DUPLICATE KEY UPDATE username=VALUES(username), user_id=VALUES(user_id);"
-#         val = (username, user_id)
-#         mycursor.execute(sql, val)
-#         mydb.commit()
-        # print("Utilisateur ajouté avec username: ", username, "et user_id: ", user_id)
+        sql = "INSERT INTO users (username, user_id) VALUES (%s,%s) ON DUPLICATE KEY UPDATE username=VALUES(username), user_id=VALUES(user_id);"
+        val = (username, user_id)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        print("Utilisateur ajouté avec username: ", username, "et user_id: ", user_id)
         
         
 # def fill_users_table():
@@ -117,6 +117,15 @@ def add_message(msg, thread_id, username, parent_id, dt):
 
 def add_result(username, course_id, grade, city, country):
     mycursor = mydb.cursor()
+
+    # Check if the course_id exists in the course table
+    mycursor.execute("SELECT id FROM course WHERE id = %s", (course_id,))
+    result = mycursor.fetchone()
+    if result is None:
+        print(f"Course {course_id} does not exist in the course table")
+        return
+
+    # Insert the result
     sql = "INSERT INTO result (username, course_id, grade, city, country) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE username=VALUES(username), course_id=VALUES(course_id), grade=VALUES(grade), city=VALUES(city), country=VALUES(country);"
     val = (username, course_id, grade, city, country)
     try:
@@ -125,6 +134,7 @@ def add_result(username, course_id, grade, city, country):
     except mysql.connector.Error as err:
         print("Une erreur s'est produite: {}".format(err))
         print("Le nom d'utilisateur est : {}".format(username))
+
     # print("Résultat ajouté avec : ", username, "course_id: ", course_id, "grade: ", grade)
 
 
@@ -150,12 +160,12 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
     add_course(course_id, opening_dates, msg)
 
     # Insertion des utilisateurs
-    # add_user(msg)
+    add_user(msg)
     # fill_users_table()
     
 
     # Insertion des threads
-    # add_thread(thread_id, title, course_id)
+    add_thread(thread_id, title, course_id)
 
     # Insertion des messages
     add_message(msg, thread_id, username, parent_id, dt)
