@@ -73,20 +73,35 @@ def add_thread(thread_id, title, course_id):
     mydb.commit()
     # print("Thread ajouté avec titre: ", title, "et course_id: ", course_id)
 
-def add_user(msg):
-    if not msg['anonymous']:
-        mycursor = mydb.cursor()
-        username = get_username(msg)
-        user_id = msg.get('user_id')
-        if user_id is None:
-            return  # ou lever une exception, selon le comportement souhaité
+# def add_user(msg):
+#     if not msg['anonymous']:
+#         mycursor = mydb.cursor()
+#         username = get_username(msg)
+#         user_id = msg.get('user_id')
+#         if user_id is None:
+#             return  # ou lever une exception, selon le comportement souhaité
 
-        sql = "INSERT INTO users (username, user_id) VALUES (%s,%s) ON DUPLICATE KEY UPDATE username=VALUES(username), user_id=VALUES(user_id);"
-        val = (username, user_id)
-        mycursor.execute(sql, val)
-        mydb.commit()
+#         sql = "INSERT INTO users (username, user_id) VALUES (%s,%s) ON DUPLICATE KEY UPDATE username=VALUES(username), user_id=VALUES(user_id);"
+#         val = (username, user_id)
+#         mycursor.execute(sql, val)
+#         mydb.commit()
         # print("Utilisateur ajouté avec username: ", username, "et user_id: ", user_id)
+        
+        
+def fill_users_table():
+    for user in user_collection.find():
+        username = user.get('username')
+        if username is not None:
+            mycursor = mydb.cursor()
+            sql = "INSERT INTO users (username) VALUES (%s) ON DUPLICATE KEY UPDATE username=VALUES(username);"
+            val = (username,)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            mycursor.execute("SELECT * FROM users")
+            result = mycursor.fetchall()
+            
 
+fill_users_table()
 
 def add_message(msg, thread_id, username, parent_id, dt):
     mycursor = mydb.cursor()
@@ -100,13 +115,16 @@ def add_message(msg, thread_id, username, parent_id, dt):
     mycursor.execute(sql, val)
     mydb.commit()
 
-def add_result(username, course_id, grade, city=None, country=None):
+def add_result(username, course_id, grade, city, country):
     mycursor = mydb.cursor()
     sql = "INSERT INTO result (username, course_id, grade, city, country) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE username=VALUES(username), course_id=VALUES(course_id), grade=VALUES(grade), city=VALUES(city), country=VALUES(country);"
     val = (username, course_id, grade, city, country)
-    mycursor.execute(sql, val)
-    mydb.commit()
-
+    try:
+        mycursor.execute(sql, val)
+        mydb.commit()
+    except mysql.connector.Error as err:
+        print("Une erreur s'est produite: {}".format(err))
+        print("Le nom d'utilisateur est : {}".format(username))
     # print("Résultat ajouté avec : ", username, "course_id: ", course_id, "grade: ", grade)
 
 
@@ -133,6 +151,8 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
 
     # Insertion des utilisateurs
     # add_user(msg)
+    fill_users_table()
+    
 
     # Insertion des threads
     # add_thread(thread_id, title, course_id)
@@ -148,20 +168,19 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
         for child in msg['children']:
             traitement(child, msg['id'])
 
+# for msg in forum_data:
+#     utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
 
-for msg in forum_data:
-    utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
-
-for course in user_data:
-    for key, value in course.items():
-        if isinstance(value, dict) and 'grade' in value:
-            grade = value['grade']
-            username = course['username']
-            course_id = key
-            country = value['country'] if 'country' in course else None
-            city = value['city'] if 'city' in course else None
-            # print(f"Grade for {username} {course_id}: {grade}")
-            add_result(username, course_id, grade, city, country)
+# for course in user_data:
+#     for key, value in course.items():
+#         if isinstance(value, dict) and 'grade' in value:
+#             grade = value['grade']
+#             username = course['username']
+#             course_id = key
+#             country = value['country'] if 'country' in course else None
+#             city = value['city'] if 'city' in course else None
+#             # print(f"Grade for {username} {course_id}: {grade}")
+#             add_result(username, course_id, grade, city, country)
 
 
 def export_table_to_csv(table_name):
