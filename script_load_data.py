@@ -178,8 +178,8 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
         for child in msg['children']:
             traitement(child, msg['id'])
 
-for msg in forum_data:
-    utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
+# for msg in forum_data:
+#     utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
 
 for course in user_data:
     for key, value in course.items():
@@ -187,10 +187,11 @@ for course in user_data:
             grade = value['grade']
             username = course['username']
             course_id = key
-            country = value['country'] if 'country' in course else None
-            city = value['city'] if 'city' in course else None
+            country = value.get('country')
+            city = value.get('city')
             # print(f"Grade for {username} {course_id}: {grade}")
             add_result(username, course_id, grade, city, country)
+
 
 
 def export_table_to_csv(table_name):
