@@ -88,20 +88,13 @@ def add_user(msg):
         print("Utilisateur ajouté avec username: ", username, "et user_id: ", user_id)
         
         
-# def fill_users_table():
-#     for user in user_collection.find(batch_size=1000):
-#         username = user.get('username')
-#         if username is not None:
-#             mycursor = mydb.cursor()
-#             sql = "INSERT INTO users (username) VALUES (%s) ON DUPLICATE KEY UPDATE username=VALUES(username);"
-#             val = (username,)
-#             mycursor.execute(sql, val)
-#             mydb.commit()
-#             mycursor.execute("SELECT * FROM users")
-#             result = mycursor.fetchall()
-            
+def fill_users_table(username, city, country, gender, year_of_birth, CSP, goals, level_of_education):
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO users (username, city, country, gender, year_of_birth, CSP, goals, level_of_education) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE username=VALUES(username), city=VALUES(city), country=VALUES(country), gender=VALUES(gender), year_of_birth=VALUES(year_of_birth), CSP=VALUES(CSP), goals=VALUES(goals), level_of_education=VALUES(level_of_education);"
+    val = (username, city, country, gender, year_of_birth, CSP, goals, level_of_education)
+    mycursor.execute(sql, val)
+    mydb.commit()
 
-# fill_users_table()
 
 def add_message(msg, thread_id, username, parent_id, dt):
     mycursor = mydb.cursor()
@@ -115,7 +108,7 @@ def add_message(msg, thread_id, username, parent_id, dt):
     mycursor.execute(sql, val)
     mydb.commit()
 
-def add_result(username, course_id, grade, city, country):
+def add_result(username, course_id, grade, Certificate_Eligible, Certificate_Delivered, Certificate_Type):
     mycursor = mydb.cursor()
 
     # Check if the course_id exists in the course table
@@ -126,8 +119,8 @@ def add_result(username, course_id, grade, city, country):
         return
 
     # Insert the result
-    sql = "INSERT INTO result (username, course_id, grade, city, country) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE username=VALUES(username), course_id=VALUES(course_id), grade=VALUES(grade), city=VALUES(city), country=VALUES(country);"
-    val = (username, course_id, grade, city, country)
+    sql = "INSERT INTO result (username, course_id, grade, Certificate_Eligible, Certificate_Delivered, Certificate_Type) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE username=VALUES(username), course_id=VALUES(course_id), grade=VALUES(grade), Certificate_Eligible=VALUES(Certificate_Eligible), Certificate_Delivered=VALUES(Certificate_Delivered), Certificate_Type=VALUES(Certificate_Type);"
+    val = (username, course_id, grade, Certificate_Eligible, Certificate_Delivered, Certificate_Type)
     try:
         mycursor.execute(sql, val)
         mydb.commit()
@@ -157,41 +150,60 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
     # print("Recurse ", msg['id'], msg['depth'] if 'depth' in msg else '-', parent_id, dt)
 
     # Insertion dans la table course- si elle n'existe pas déjà
-    add_course(course_id, opening_dates, msg)
+    # add_course(course_id, opening_dates, msg)
 
     # Insertion des utilisateurs
-    add_user(msg)
+    # add_user(msg)
     # fill_users_table()
-    
 
     # Insertion des threads
-    add_thread(thread_id, title, course_id)
+    # add_thread(thread_id, title, course_id)
 
     # Insertion des messages
-    add_message(msg, thread_id, username, parent_id, dt)
+    # add_message(msg, thread_id, username, parent_id, dt)
 
     # Insertion des résultats
-    add_result(username, course_id, grade, city, country)
+    # add_result(username, course_id, grade, city, country)
 
     # Récursivement, parcourir les enfants du message
     if 'children' in msg:
         for child in msg['children']:
             traitement(child, msg['id'])
 
+#Messages
+
 # for msg in forum_data:
 #     utils.recur_message(msg['content'], traitement, thread_id=msg['_id'])
 
-for course in user_data:
-    for key, value in course.items():
-        if isinstance(value, dict) and 'grade' in value:
-            grade = value['grade']
-            username = course['username']
-            course_id = key
-            country = value.get('country')
-            city = value.get('city')
-            # print(f"Grade for {username} {course_id}: {grade}")
-            add_result(username, course_id, grade, city, country)
+#Résultats
 
+# for course in user_data:
+#     for key, value in course.items():
+#         if isinstance(value, dict) and 'grade' in value:
+#             grade = value['grade']
+#             username = course['username']
+#             course_id = key
+#             Certificate_Eligible = value.get('Certificate Eligible')
+#             Certificate_Delivered = value.get('Certificate Delivered')
+#             Certificate_Type = value.get('Certificate Type')
+#             # print(f"Grade for {username} {course_id}: {grade}")
+#             add_result(username, course_id, grade,Certificate_Eligible, Certificate_Delivered, Certificate_Type)
+
+#Utilisateurs
+
+# for course in user_data:
+#     for key, value in course.items():
+#         if isinstance(value, dict):
+#             username = course['username']
+#             if username is not None:
+#                 country = value.get('country')
+#                 city = value.get('city')
+#                 gender = value.get('gender')
+#                 year_of_birth = value.get('year_of_birth')
+#                 CSP = value.get('CSP')
+#                 goals = value.get('goals')
+#                 level_of_education = value.get('level_of_education')
+#                 fill_users_table(username, city, country, gender, year_of_birth, CSP, goals, level_of_education)
 
 
 def export_table_to_csv(table_name):
@@ -207,7 +219,7 @@ def export_table_to_csv(table_name):
         for row in rows:
             writer.writerow(row)
 
-# export_table_to_csv('thread')
+export_table_to_csv('users')
 
 elapsed_time = time.time() - start_time  # Fin du chronomètre
 print(f"Temps d'exécution : {elapsed_time:.2f} secondes")
