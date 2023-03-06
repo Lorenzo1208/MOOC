@@ -52,7 +52,10 @@ def get_course_id(msg):
 
 def get_date(msg):
     dt_str = msg['created_at']
-    dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ')
+    try:
+        dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ')
+    except ValueError:
+        dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
     return dt
 
 def add_course(course_id, opening_dates, msg):
@@ -111,14 +114,12 @@ def add_message(msg, thread_id, username, parent_id, dt):
 def add_result(username, course_id, grade, Certificate_Eligible, Certificate_Delivered, Certificate_Type):
     mycursor = mydb.cursor()
 
-    # Check if the course_id exists in the course table
     mycursor.execute("SELECT id FROM course WHERE id = %s", (course_id,))
     result = mycursor.fetchone()
     if result is None:
         print(f"Course {course_id} does not exist in the course table")
         return
 
-    # Insert the result
     sql = "INSERT INTO result (username, course_id, grade, Certificate_Eligible, Certificate_Delivered, Certificate_Type) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE username=VALUES(username), course_id=VALUES(course_id), grade=VALUES(grade), Certificate_Eligible=VALUES(Certificate_Eligible), Certificate_Delivered=VALUES(Certificate_Delivered), Certificate_Type=VALUES(Certificate_Type);"
     val = (username, course_id, grade, Certificate_Eligible, Certificate_Delivered, Certificate_Type)
     try:
