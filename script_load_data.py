@@ -1,9 +1,11 @@
 import pymongo
+import pandas as pd
 import mysql.connector
 import utils
 import time
 import csv
 from datetime import datetime
+from textblob import TextBlob
 
 # Connexion à la base MongoDB
 client = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -12,7 +14,7 @@ forum_collection = db["forum"]
 user_collection = db["user"]
 
 # Extraire les données de la collection "forum" de MongoDB
-forum_data = forum_collection.find()
+forum_data = forum_collection.find(batch_size=1000)
 user_data = user_collection.find(batch_size=1000)
 
 # Connexion à la base MySQL
@@ -102,11 +104,11 @@ def fill_users_table(username, city, country, gender, year_of_birth, CSP, goals,
 def add_message(msg, thread_id, username, parent_id, dt):
     mycursor = mydb.cursor()
     sql = """INSERT INTO messages 
-            (id, created_at, type, depth, body, thread_id, username, parent_id) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE parent_id=VALUES(parent_id), depth=VALUES(depth), thread_id=VALUES(thread_id);"""
+            (id, created_at, type, depth, body, thread_id, username, parent_id,course_id) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE parent_id=VALUES(parent_id), depth=VALUES(depth), thread_id=VALUES(thread_id), course_id=VALUES(course_id);"""
 
-    val = (msg['id'], dt, msg['type'], msg['depth'] if 'depth' in msg else None, msg['body'], thread_id, username, parent_id)
+    val = (msg['id'], dt, msg['type'], msg['depth'] if 'depth' in msg else None, msg['body'], thread_id, username, parent_id, msg['course_id'])
 
     mycursor.execute(sql, val)
     mydb.commit()
@@ -161,7 +163,7 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
     # add_thread(thread_id, title, course_id)
 
     # Insertion des messages
-    # add_message(msg, thread_id, username, parent_id, dt)
+    add_message(msg, thread_id, username, parent_id, dt)
 
     # Insertion des résultats
     # add_result(username, course_id, grade, city, country)
@@ -205,6 +207,26 @@ def traitement(msg=None, parent_id=None, thread_id=None, title=None, course_id=N
 #                 goals = value.get('goals')
 #                 level_of_education = value.get('level_of_education')
 #                 fill_users_table(username, city, country, gender, year_of_birth, CSP, goals, level_of_education)
+
+def update_sentiment_analysis(mydb):
+    df = pd.read_sql('SELECT * FROM messages;', con=mydb)
+
+    def get_polarity_subjectivity(text):
+        blob = TextBlob(text)
+        return blob.sentiment.polarity, blob.sentiment.subjectivity
+
+    df[['polarity', 'subjectivity']] = df['body'].apply(get_polarity_subjectivity).apply(pd.Series)
+
+    cursor = mydb.cursor()
+    for idx, row in df.iterrows():
+        message_id = row['id']
+        polarity = row['polarity']
+        subjectivity = row['subjectivity']
+        cursor.execute('UPDATE messages SET polarity=%s, subjectivity=%s WHERE id=%s', (polarity, subjectivity, message_id))
+
+    mydb.commit()
+    
+# update_sentiment_analysis(mydb)
 
 
 def export_table_to_csv(table_name):
