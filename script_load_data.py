@@ -6,6 +6,7 @@ import time
 import csv
 from datetime import datetime
 from textblob import TextBlob
+from sklearn.preprocessing import OneHotEncoder
 
 # Connexion à la base MongoDB
 client = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -242,7 +243,27 @@ def export_table_to_csv(table_name):
         for row in rows:
             writer.writerow(row)
 
-export_table_to_csv('users')
+# export_table_to_csv('users')
+
+
+# Jointure des tables
+df = pd.read_sql(""" SELECT DISTINCT u.username, u.city, u.country, u.gender, u.year_of_birth, u.level_of_education, m.body, m.polarity, m.subjectivity,m.course_id, r.Certificate_Delivered
+FROM users u
+JOIN messages m ON u.username = m.username
+JOIN result r ON u.username = r.username
+WHERE u.city IS NOT NULL AND u.city <> ''
+    AND u.country IS NOT NULL AND u.country <> ''
+    AND u.gender IS NOT NULL AND u.gender <> ''
+    AND u.year_of_birth IS NOT NULL
+    AND u.level_of_education IS NOT NULL AND u.level_of_education <> ''
+    AND m.body IS NOT NULL AND m.body <> ''
+    AND m.polarity IS NOT NULL
+    AND m.subjectivity IS NOT NULL
+    AND r.Certificate_Delivered IS NOT NULL AND r.Certificate_Delivered <> '' ;""", con=mydb)
+
+print(df.head())
+
+df.to_csv('data.csv', index=False)
 
 elapsed_time = time.time() - start_time  # Fin du chronomètre
 print(f"Temps d'exécution : {elapsed_time:.2f} secondes")
