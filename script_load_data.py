@@ -227,7 +227,7 @@ def update_sentiment_analysis(mydb):
 
     mydb.commit()
     
-# update_sentiment_analysis(mydb)
+update_sentiment_analysis(mydb)
 
 
 def export_table_to_csv(table_name):
@@ -261,9 +261,9 @@ WHERE u.city IS NOT NULL AND u.city <> ''
     AND m.subjectivity IS NOT NULL
     AND r.Certificate_Delivered IS NOT NULL AND r.Certificate_Delivered <> '' ;""", con=mydb)
 
-print(df.head())
+# print(df.head())
 
-df.to_csv('data.csv', index=False)
+# df.to_csv('data.csv', index=False)
 
 elapsed_time = time.time() - start_time  # Fin du chronomètre
 print(f"Temps d'exécution : {elapsed_time:.2f} secondes")

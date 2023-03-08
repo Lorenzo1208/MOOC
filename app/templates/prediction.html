@@ -73,6 +73,14 @@
     </nav>
 
     <h1>Prédiction</h1>
+
+    {% if prediction is defined %}
+    <div class="alert {% if prediction == """Désolé, la prédiction indique que vous n'obtiendrez pas votre diplôme.""" %}alert-danger{% else %}alert-success{% endif %}">
+        <strong>Résultat de la prédiction:</strong> {{ prediction }}
+    </div>
+    {% endif %}
+
+
     <form method="POST" action="/prediction">
         <div>
             <label for="ville">Ville:</label>
@@ -84,19 +92,19 @@
         </div>
         <div>
             <label for="genre">Genre:</label>
-            <input type="radio" id="genre-femme" name="genre" value="femme">
+            <input type="radio" id="genre-femme" name="genre" value="f">
             <label for="genre-femme">Femme</label>
-            <input type="radio" id="genre-homme" name="genre" value="homme">
+            <input type="radio" id="genre-homme" name="genre" value="m">
             <label for="genre-homme">Homme</label>
         </div>
         <div>
             <label for="date_naissance">Date de naissance:</label>
-            <input type="date" id="date_naissance" name="date_naissance">
+            <input type="text" id="date_naissance" name="date_naissance">
         </div>
         <div>
             <label for="niveau_education">Niveau d'éducation:</label>
             <select id="niveau_education" name="niveau_education">
-                <option value="primaire">Primaire</option>
+                <option value="other">Primaire</option>
                 <option value="secondaire">Secondaire</option>
                 <option value="universitaire">Universitaire</option>
             </select>
