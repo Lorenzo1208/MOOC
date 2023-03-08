@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Analyse</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        
+        h1 {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/analyse">Analyse</a>
+        <a class="navbar-brand" href="/prediction">Prédiction</a>
+    </nav>
+
+    <h1>Analyse</h1>
+    
+    <canvas id="myChart"></canvas>
+    
+    <div class="text-center">
+        <button id="show-graph">Afficher le graphique</button>
+    </div>
+    
+
+    <script>
+        var showGraphButton = document.getElementById('show-graph');
+        var chartData = {{ data | tojson }};
+        var chartOptions = {{ options | tojson }};
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = null;
+        var isOpen = false;
+
+        showGraphButton.addEventListener('click', function() {
+            if (isOpen) {
+                myChart.destroy();
+                isOpen = false;
+            } else {
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: chartOptions
+                });
+                isOpen = true;
+            }
+        });
+    </script>
+</body>
+</html>
