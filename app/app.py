@@ -30,7 +30,6 @@ def graph():
     usernames = [row[0] for row in rows]
     counts = [row[1] for row in rows]
 
-    # Prepare the data for Chart.js
     data = {
         "labels": usernames,
         "datasets": [
