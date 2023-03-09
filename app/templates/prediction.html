@@ -66,6 +66,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Accueil</a>
         <a class="navbar-brand" href="/analyse">Analyse</a>
         <a class="navbar-brand" href="/prediction">Prédiction</a>
     </nav>
@@ -83,7 +84,7 @@
 
 
     <form method="POST" action="/prediction">
-        <div style="margin-bottom: 10px;">
+        <div>
             <label for="ville">Ville:</label>
             <input type="text" id="ville" name="ville">
         </div>
@@ -150,7 +151,7 @@
                 <option value="p">Doctorat (Bac +8 ou supérieur)</option>
             </select>
         </div>
-        <div style="margin-bottom: 10px;">
+        <div>
             <label for="messages">Messages:</label>
             <input type="text" id="messages" name="messages">
         </div>
