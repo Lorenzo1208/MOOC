@@ -265,6 +265,10 @@ def graph1():
     }
 
     options21 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Genre ayant le meilleur taux de réussite"
@@ -393,6 +397,10 @@ def graph1():
     }
 
     options6 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Nombre d'utilisateurs par niveau d'études"
@@ -433,6 +441,10 @@ def graph1():
     }
 
     options7 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Taux de réussite par niveau d'études"
