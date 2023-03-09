@@ -40,7 +40,8 @@
             display: flex;
             min-height: 100%;
             justify-content: center;
-            padding: var(--spacing-xxl) var(--spacing-l);
+            padding : var(--spacing-l);
+            
           }
           
           .card-grid{
@@ -144,44 +145,57 @@
             font-family: "Montserrat", sans-serif;
           }
 
-          .header {
+          h1 {
           
             text-align: center;
            
             
-            font-size: 30px;
+            text-transform: uppercase;
+            
+            
+         
+            border-radius: 5px;
+            font-size: 40px;
         }
+        
+        img {
+            display: block;
+    margin: auto;
+    width: 10%;
+    height: auto;
+          }
     </style>
 </head>
 <body>
-
+    <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
-    <div class="header">
-        <h1>Application d'analyse de la plateforme FUN MOOC</h1>
-        <p>My supercool header</p>
-      </div>
+    <img src="https://www.fun-mooc.fr/static/richie/images/logo-fr.svg" alt="Logo" width="">
+    <h1>Application d'analyse de la plateforme FUN MOOC</h1>
 
 <section class="hero-section">
   <div class="card-grid">
     <a class="card" href="https://www.fun-mooc.fr/fr/">
-      <div class="card__background" style="background-image: url(https://imgs.search.brave.com/SbQ11sE3AJ-ci_Z6pCMgYli-K4wjlbrZszDkPrs3UFk/rs:fit:1200:1061:1/g:ce/aHR0cDovL3d3dy5z/b2x1dGlvbnMtcmVz/c291cmNlcy1odW1h/aW5lcy5jb20vbG9n/by83OTcwYTdjNmRm/N2VmNzJsb2dvX2Z1/bl9wcmludC5qcGc)"></div>
+      <div class="card__background" style="background-image: url(https://images.pexels.com/photos/4065617/pexels-photo-4065617.jpeg?auto=compress&cs=tinysrgb&w=600)"></div>
       <div class="card__content">
-        <p class="card__category">FUN MOOC</p>
         <h3 class="card__heading">FUN MOOC</h3>
+        <p class="card__category"> Des cours en ligne gratuits pour découvrir, apprendre, progresser et réussir avec des experts des meilleurs établissements d'enseignement supérieur.</p>
+        
       </div>
     </a>
     <a class="card" href="/analyse">
-      <div class="card__background" style="background-image: url(https://imgs.search.brave.com/TIFEity38P7hEKGpTbha0A5ETRsVs87FSLsQiTpiry0/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly9taXJv/Lm1lZGl1bS5jb20v/bWF4LzIwMDAvMSot/OUZnUXJDZmtJSHFt/WmNUMFd5cjhRLnBu/Zw)"></div>
+      <div class="card__background" style="background-image: url(https://images.pexels.com/photos/7173047/pexels-photo-7173047.jpeg?auto=compress&cs=tinysrgb&w=600)"></div>
       <div class="card__content">
-        <p class="card__category">Analyse</p>
-        <h3 class="card__heading">Analyse</h3>
+        <h3 class="card__heading">ANALYSE</h3>
+        <p class="card__category">Découvrez les résultats de notre analyse approfondie des données de la plateforme FUN MOOC, qui offre des cours en ligne gratuits pour tous. </p>
+        
       </div>
     </a>
     <a class="card" href="/prediction">
       <div class="card__background" style="background-image: url(https://imgs.search.brave.com/J8JxkxGbeu68fha5RliMpiaKtJLPCx3-2cDqf4km7UI/rs:fit:1200:900:1/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDMyMDUz/ODcuanBn)"></div>
       <div class="card__content">
-        <p class="card__category">Prédiction</p>
-        <h3 class="card__heading">Prédiction</h3>
+        <h3 class="card__heading">PRÉDICTION</h3>
+        <p class="card__category">Découvrez si vous allez réussir votre diplôme sur la plateforme FUN MOOC grâce à notre formulaire de prédiction unique ! </p>
+        
       </div>
     </li>
   <div>
