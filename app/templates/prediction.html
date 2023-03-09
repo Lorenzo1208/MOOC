@@ -82,40 +82,83 @@
 
 
     <form method="POST" action="/prediction">
-        <div>
+        <div style="margin-bottom: 10px;">
             <label for="ville">Ville:</label>
             <input type="text" id="ville" name="ville">
         </div>
-        <div>
+        <div style="margin-bottom: 20px;">
             <label for="pays">Pays:</label>
-            <input type="text" id="pays" name="pays">
+            <select id="pays" name="pays">
+                <option value="Autre">Autre</option>
+                <option value="AD">Andorre</option>
+                <option value="AU">Australie</option>
+                <option value="BE">Belgique</option>
+                <option value="BJ">Bénin</option>
+                <option value="CA">Canada</option>
+                <option value="CD">République Démocratique du Congo</option>
+                <option value="CH">Suisse</option>
+                <option value="CI">Côte d'Ivoire</option>
+                <option value="CM">Cameroun</option>
+                <option value="CN">Chine</option>
+                <option value="CO">Colombie</option>
+                <option value="CR">Costa Rica</option>
+                <option value="DZ">Algérie</option>
+                <option value="AE">Émirats Arabes Unis</option>
+                <option value="FR">France</option>
+                <option value="GA">Gabon</option>
+                <option value="GP">Guadeloupe</option>
+                <option value="IE">Irlande</option>
+                <option value="ID">Indonésie</option>
+                <option value="MA">Maroc</option>
+                <option value="MG">Madagascar</option>
+                <option value="ML">Mali</option>
+                <option value="MQ">Martinique</option>
+                <option value="MR">Mauritanie</option>
+                <option value="PF">Polynésie française</option>
+                <option value="RE">Réunion</option>
+                <option value="RU">Russie</option>
+                <option value="SG">Singapour</option>
+                <option value="SN">Sénégal</option>
+                <option value="TG">Togo</option>
+                <option value="TH">Thaïlande</option>
+                <option value="TN">Tunisie</option>
         </div>
-        <div>
-            <label for="genre">Genre:</label>
+        <div style="margin-bottom: 20px;">
+            <label for="genre">Genre:/label>
             <input type="radio" id="genre-femme" name="genre" value="f">
             <label for="genre-femme">Femme</label>
             <input type="radio" id="genre-homme" name="genre" value="m">
             <label for="genre-homme">Homme</label>
         </div>
-        <div>
+        <div style="margin-bottom: 10px;">
             <label for="date_naissance">Date de naissance:</label>
             <input type="text" id="date_naissance" name="date_naissance">
         </div>
-        <div>
-            <label for="niveau_education">Niveau d'éducation:</label>
+        <div style="margin-bottom: 20px;">
+            <label for="niveau_education">Niveau d'étude:</label>
             <select id="niveau_education" name="niveau_education">
-                <option value="other">Primaire</option>
-                <option value="secondaire">Secondaire</option>
-                <option value="universitaire">Universitaire</option>
+                <option value="other">Autre</option>
+                <option value="none">Aucun</option>
+                <option value="el">École primaire</option>
+                <option value="jhs">Collège (Brevet)</option>
+                <option value="hs">Lycée (Bac)</option>
+                <option value="d">DUT, BTS</option>
+                <option value="b">Licence (Bac +3)</option>
+                <option value="m">Master (Bac +5)</option>
+                <option value="p">Doctorat (Bac +8 ou supérieur)</option>
             </select>
         </div>
-        <div>
+        <div style="margin-bottom: 10px;">
             <label for="messages">Messages:</label>
             <input type="text" id="messages" name="messages">
         </div>
-        <div>
-            <label for="course_id">Nom du cours:</label>
-            <input type="text" id="course_id" name="course_id">
+        <div style="margin-bottom: 20px;">
+            <label for="course_id">Intitulé du cours:</label>
+            <select id="course_id" name="course_id">
+                <option value="04017">04017</option>
+                <option value="04018">04018</option>
+                <option value="04006">04006</option>
+            </select>
         </div>
         <button type="submit">Faire une prédiction</button>
     </form>
