@@ -8,30 +8,59 @@
     <style>
         h1 {
             text-align: center;
+            margin-top: 20px; /* ajustez la valeur en fonction de vos besoins */
         }
+    
+        canvas.small-canvas {
+            width: 20px;
+            height: 20px;
+        }
+        .navbar .nav-link {
+            margin-right: 10px;
+            font-family: "Montserrat", sans-serif;
+        }
+          .navbar .nav-link:last-child {
+            margin-right: 0;
+          }
+
+          body {
+            font-family: "Montserrat", sans-serif;
+          }
+          
+          h1 {
+            font-family: "Montserrat", serif;
+          }
+          
+          p {
+            font-family: "Montserrat", sans-serif;
+          }
+          
     </style>
-</head>
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Accueil</a>
-        <a class="navbar-brand" href="/analyse">Analyse</a>
-        <a class="navbar-brand" href="/prediction">Prédiction</a>
-    </nav>
-
+    </head>
+    <body>
+    
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="nav-link btn btn-dark" href="/">Accueil</a>
+            <a class="nav-link btn btn-dark" href="/analyse">Analyse</a>
+            <a class="nav-link btn btn-dark" href="/prediction">Prédiction</a>
+        </nav>
+        
+    
     <h1>Analyse</h1>
     
-    <canvas id="{{ chart1_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart1_id }}" width="500" height="500" class="mx-auto small-canvas"></canvas>
     <div class="text-center">
-        <button id="show-graph1">Afficher le graphique 1</button>
+        <button id="show-graph1" class="btn btn-dark">Afficher le graphique du nombre de messages</button>
     </div>
     
-    <canvas id="{{ chart2_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart2_id }}" width="500" height="500" class="mx-auto small-canvas"></canvas>
     <div class="text-center">
-        <button id="show-graph2">Afficher le graphique 2</button>
+        <button id="show-graph2" class="btn btn-dark">Afficher le graphique de la répartition homme femme</button>
     </div>
     
     <script>
+        var canvases = document.querySelectorAll('canvas.small-canvas');
+    
         var chartData = {{ data | tojson }};
         var isOpen1 = false;
         var isOpen2 = false;
@@ -43,11 +72,12 @@
         chartOptions1.responsive = false;
         var ctx1 = document.getElementById('{{ chart1_id }}').getContext('2d');
         var myChart1 = null;
-        
+    
         showGraphButton1.addEventListener('click', function() {
             if (isOpen1) {
                 myChart1.destroy();
                 isOpen1 = false;
+                canvases[0].classList.add('small-canvas');
             } else {
                 myChart1 = new Chart(ctx1, {
                     type: 'bar',
@@ -55,6 +85,7 @@
                     options: chartOptions1
                 });
                 isOpen1 = true;
+                canvases[0].classList.remove('small-canvas');
             }
         });
     
@@ -65,11 +96,12 @@
         chartOptions2.responsive = false;
         var ctx2 = document.getElementById('{{ chart2_id }}').getContext('2d');
         var myChart2 = null;
-        
+    
         showGraphButton2.addEventListener('click', function() {
             if (isOpen2) {
                 myChart2.destroy();
                 isOpen2 = false;
+                canvases[1].classList.add('small-canvas');
             } else {
                 myChart2 = new Chart(ctx2, {
                     type: 'doughnut',
@@ -77,9 +109,11 @@
                     options: chartOptions2
                 });
                 isOpen2 = true;
+                canvases[1].classList.remove('small-canvas');
             }
         });
     </script>
+    
     
 </body>
 </html>

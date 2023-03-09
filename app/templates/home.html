@@ -68,6 +68,7 @@
             list-style: none;
             position: relative;
             border : none;
+            background-color: transparent;
           }
           
           .card:before{
@@ -123,13 +124,33 @@
             line-height: 1.4;
             word-spacing: 100vw;
           }
+
+          .navbar .nav-link {
+            margin-right: 10px;
+            font-family: "Montserrat", sans-serif;
+        }
+    
+
+          body {
+            font-family: "Montserrat", sans-serif;
+          }
+          
+          h1 {
+            font-family: "Montserrat", serif;
+            margin-top: 20px;
+          }
+          
+          p {
+            font-family: "Montserrat", sans-serif;
+          }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Accueil</a>
-        <a class="navbar-brand" href="/analyse">Analyse</a>
-        <a class="navbar-brand" href="/prediction">Prédiction</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="nav-link btn btn-dark" href="/">Accueil</a>
+        <a class="nav-link btn btn-dark" href="/analyse">Analyse</a>
+        <a class="nav-link btn btn-dark" href="/prediction">Prédiction</a>
+    
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false">
             <span class="navbar-toggler-icon"></span>
         </button>
