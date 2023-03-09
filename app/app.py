@@ -106,6 +106,33 @@ def graph1():
     pourcentage_reussite = [row[4] for row in rows]
 
 
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT users.level_of_education, COUNT(*) as total FROM users JOIN result ON users.username = result.username
+    WHERE users.level_of_education IS NOT NULL AND users.level_of_education != '' AND users.level_of_education != 'None'
+    GROUP BY users.level_of_education ORDER BY total DESC;""")
+    rows = cursor.fetchall()
+    level_of_education = [row[0] for row in rows]
+    count_level = [row[1] for row in rows]
+
+
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT 
+    users.level_of_education ,
+    COUNT(*) as total,
+    COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) AS nb_reussites,
+    COUNT(CASE WHEN result.Certificate_Eligible = 'N' THEN 1 END) AS nb_echecs,
+    100 * COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) / COUNT(*) AS proportion_reussite
+    FROM users
+    JOIN result
+    ON users.username = result.username
+    WHERE users.level_of_education IS NOT NULL AND users.level_of_education != ''
+    GROUP BY users.level_of_education
+    ORDER BY proportion_reussite DESC;""")
+    rows = cursor.fetchall()
+    level_of_education1 = [row[0] for row in rows]
+    pourcent_reussite2 = [row[4] for row in rows]
+
+
     data1 = {
         "labels": usernames,
         "datasets": [
@@ -299,15 +326,98 @@ def graph1():
         }
     }
 
+    data6 = {
+        "labels": level_of_education,
+        "datasets": [
+            {
+                "label": "Nombre d'utilisateurs",
+                "data": count_level,
+                "backgroundColor": [
+                                       f'rgba({r},{g},{b},0.2)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                              (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                              (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                              (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                              (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                                   ][:len(level_of_education)],
+                "borderColor": [
+                                   f'rgba({r},{g},{b},1)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                        (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                        (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                        (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                               ][:len(level_of_education)],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options6 = {
+        "title": {
+            "display": True,
+            "text": "Nombre d'utilisateurs par niveau d'études"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+
+    data7 = {
+        "labels": level_of_education1,
+        "datasets": [
+            {
+                "label": "Pourcentage de réussite",
+                "data": pourcent_reussite2,
+                "backgroundColor": [
+                                       f'rgba({r},{g},{b},0.2)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                              (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                              (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                              (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                              (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                                   ][:len(level_of_education1)],
+                "borderColor": [
+                                   f'rgba({r},{g},{b},1)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                        (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                        (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                        (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                               ][:len(level_of_education1)],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options7 = {
+        "title": {
+            "display": True,
+            "text": "Taux de réussite par niveau d'études"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+
+
     data = {'graph1': {'data': data1, 'options': options1},
             'graph2': {'data': data2, 'options': options2},
             'graph21': {'data': data21, 'options': options21},
             'graph3': {'data': data3, 'options': options3},
-            'graph4': {'data': data4, 'options': options4}}
+            'graph4': {'data': data4, 'options': options4},
+            'graph6': {'data': data6, 'options': options6},
+            'graph7': {'data': data7, 'options': options7}}
 
 
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4")
+    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4", chart6_id="myChart6", chart7_id="myChart7")
 
 
 

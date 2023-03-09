@@ -45,6 +45,16 @@
     <div class="text-center">
         <button id="show-graph4">Afficher le graphique 4</button>
     </div>
+
+    <canvas id="{{ chart6_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <div class="text-center">
+        <button id="show-graph6">Afficher le graphique 6</button>
+    </div>
+
+    <canvas id="{{ chart7_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <div class="text-center">
+        <button id="show-graph7">Afficher le graphique 7</button>
+    </div>
     
     <script>
         var chartData = {{ data | tojson }};
@@ -53,6 +63,8 @@
         var isOpen21 = false;
         var isOpen3 = false;
         var isOpen4 = false;
+        var isOpen6 = false;
+        var isOpen7 = false;
 
     
         // Button for chart 1
@@ -168,6 +180,53 @@
                 isOpen4 = true;
             }
         });
+
+
+                        // Button for chart 6
+        var showGraphButton6 = document.getElementById('show-graph6');
+        var chartData6 = chartData.graph6.data;
+        var chartOptions6 = chartData.graph6.options;
+        chartOptions6.responsive = false;
+        var ctx6 = document.getElementById('{{ chart6_id }}').getContext('2d');
+        var myChart6 = null;
+
+        showGraphButton6.addEventListener('click', function() {
+            if (isOpen6) {
+                myChart6.destroy();
+                isOpen6 = false;
+            } else {
+                myChart6 = new Chart(ctx6, {
+                    type: 'doughnut',
+                    data: chartData6,
+                    options: chartOptions6
+                });
+                isOpen6 = true;
+            }
+        });
+
+
+                        // Button for chart 7
+        var showGraphButton7 = document.getElementById('show-graph7');
+        var chartData7 = chartData.graph7.data;
+        var chartOptions7 = chartData.graph7.options;
+        chartOptions7.responsive = false;
+        var ctx7 = document.getElementById('{{ chart7_id }}').getContext('2d');
+        var myChart7 = null;
+
+        showGraphButton7.addEventListener('click', function() {
+            if (isOpen7) {
+                myChart7.destroy();
+                isOpen7 = false;
+            } else {
+                myChart7 = new Chart(ctx7, {
+                    type: 'polarArea',
+                    data: chartData7,
+                    options: chartOptions7
+                });
+                isOpen7 = true;
+            }
+        });
+
     </script>
     
 </body>
