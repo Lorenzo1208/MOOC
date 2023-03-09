@@ -118,7 +118,6 @@ def graph():
     data = {'graph1': {'data': data1, 'options': options1}, 
             'graph2': {'data': data2, 'options': options2}}
     
-    
     # Pass the data and options to the template
     return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2")
 
@@ -168,4 +167,4 @@ def prediction():
     return render_template('prediction.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+     app.run(debug=True, host='0.0.0.0', port=5000, threaded=True, use_reloader=True)
