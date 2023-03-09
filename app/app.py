@@ -43,6 +43,36 @@ def graph1():
     nb_femmes = rows[0][1]
 
     cursor = mydb.cursor()
+    cursor.execute("""SELECT 
+        COUNT(CASE WHEN users.gender = 'M' THEN 1 END) AS nb_hommes2,
+        COUNT(CASE WHEN users.gender = 'F' THEN 1 END) AS nb_femmes2,
+        COUNT(CASE WHEN users.gender = 'O' THEN 1 END) AS nb_autre
+        FROM 
+        users""")
+    rows = cursor.fetchall()
+    nb_hommes = rows[0][0]
+    nb_femmes = rows[0][1]
+    nb_autre = rows[0][2]
+
+
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT 
+        users.gender,
+        COUNT(*) as total,
+        COUNT(CASE WHEN result.Certificate_Eligible  = 'Y' THEN 1 END) AS nb_reussites,
+        COUNT(CASE WHEN result.Certificate_Eligible = 'N' THEN 1 END) AS nb_echecs,
+        100 * COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) / COUNT(*) AS proportion_reussite
+        FROM users JOIN result ON
+        users.username = result.username
+        WHERE users.gender != 'None' AND users.gender != ''
+        GROUP BY users.gender
+        ORDER BY proportion_reussite DESC;""")
+    rows = cursor.fetchall()
+    genre1 = [row[0] for row in rows]
+    pourcent_reussite1 = [row[4] for row in rows]
+
+
+    cursor = mydb.cursor()
     cursor.execute("""SELECT users.country, COUNT(*) as total FROM users JOIN result ON users.username = result.username
     WHERE users.country IS NOT NULL AND users.country != ''  GROUP BY users.country ORDER BY total DESC LIMIT 15""")
     rows = cursor.fetchall()
@@ -83,6 +113,33 @@ def graph1():
         """)
     rows = cursor.fetchall()
     dates = [str(row[0]) for row in rows]
+
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT users.level_of_education, COUNT(*) as total FROM users JOIN result ON users.username = result.username
+    WHERE users.level_of_education IS NOT NULL AND users.level_of_education != '' AND users.level_of_education != 'None'
+    GROUP BY users.level_of_education ORDER BY total DESC;""")
+    rows = cursor.fetchall()
+    level_of_education = [row[0] for row in rows]
+    count_level = [row[1] for row in rows]
+
+
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT 
+    users.level_of_education ,
+    COUNT(*) as total,
+    COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) AS nb_reussites,
+    COUNT(CASE WHEN result.Certificate_Eligible = 'N' THEN 1 END) AS nb_echecs,
+    100 * COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) / COUNT(*) AS proportion_reussite
+    FROM users
+    JOIN result
+    ON users.username = result.username
+    WHERE users.level_of_education IS NOT NULL AND users.level_of_education != ''
+    GROUP BY users.level_of_education
+    ORDER BY proportion_reussite DESC;""")
+    rows = cursor.fetchall()
+    level_of_education1 = [row[0] for row in rows]
+    pourcent_reussite2 = [row[4] for row in rows]
+
 
     data1 = {
         "labels": usernames,
@@ -127,27 +184,30 @@ def graph1():
             }]
         }
     }
-    
-    
-    
+
+
+
     data2 = {
-        "labels": ['Hommes', 'Femmes'],
+        "labels": ['Hommes', 'Femmes', 'Autre'],
         "datasets": [
             {
                 "label": "Proportion hommes-femmes",
-                "data": [nb_hommes, nb_femmes],
+                "data": [nb_hommes, nb_femmes, nb_autre],
                 "backgroundColor": [
                     'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)'
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 205, 86, 0.2)'   # Nouvelle couleur
                 ],
                 "borderColor": [
                     'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)'
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 205, 86, 1)'     # Nouvelle couleur
                 ],
                 "borderWidth": 1
             }
         ]
     }
+
     options2 = {
         "animation": {
             "duration": 2000,
@@ -156,6 +216,42 @@ def graph1():
         "title": {
             "display": True,
             "text": "Proportion hommes-femmes"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+
+    data21 = {
+        "labels": genre1,
+        "datasets": [
+            {
+                "label": "Pourcentage de réussite",
+                "data": pourcent_reussite1,
+                "backgroundColor": [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 205, 86, 0.2)'   # Nouvelle couleur
+                ],
+                "borderColor": [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 205, 86, 1)'     # Nouvelle couleur
+                ],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options21 = {
+        "title": {
+            "display": True,
+            "text": "Genre ayant le meilleur taux de réussite"
         },
         "scales": {
             "yAxes": [{
@@ -299,15 +395,98 @@ def graph1():
 
 
 
+    data6 = {
+        "labels": level_of_education,
+        "datasets": [
+            {
+                "label": "Nombre d'utilisateurs",
+                "data": count_level,
+                "backgroundColor": [
+                                       f'rgba({r},{g},{b},0.2)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                              (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                              (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                              (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                              (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                                   ][:len(level_of_education)],
+                "borderColor": [
+                                   f'rgba({r},{g},{b},1)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                        (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                        (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                        (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                               ][:len(level_of_education)],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options6 = {
+        "title": {
+            "display": True,
+            "text": "Nombre d'utilisateurs par niveau d'études"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+
+    data7 = {
+        "labels": level_of_education1,
+        "datasets": [
+            {
+                "label": "Pourcentage de réussite",
+                "data": pourcent_reussite2,
+                "backgroundColor": [
+                                       f'rgba({r},{g},{b},0.2)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                              (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                              (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                              (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                              (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                                   ][:len(level_of_education1)],
+                "borderColor": [
+                                   f'rgba({r},{g},{b},1)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                        (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                        (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                        (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                               ][:len(level_of_education1)],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options7 = {
+        "title": {
+            "display": True,
+            "text": "Taux de réussite par niveau d'études"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+
+
     data = {'graph1': {'data': data1, 'options': options1},
             'graph2': {'data': data2, 'options': options2},
+            'graph21': {'data': data21, 'options': options21},
             'graph3': {'data': data3, 'options': options3},
             'graph4': {'data': data4, 'options': options4},
-            'graph5': {'data': data5, 'options': options5}}
+            'graph6': {'data': data6, 'options': options6},
+            'graph7': {'data': data7, 'options': options7}}
 
 
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart3_id="myChart3", chart4_id="myChart4", chart5_id="myChart5")
+    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4", chart6_id="myChart6", chart7_id="myChart7")
 
 
 
