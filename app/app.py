@@ -9,10 +9,10 @@ import pandas as pd
 model = joblib.load('ada_model.pkl')
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1",
+    host="localhost",
     port=3306,
     user="root",
-    password="greta2023",
+    password="root",
     database="g4"
 )
 
@@ -75,6 +75,14 @@ def graph1():
     country2 = [row[0] for row in rows]
     pourcentage_reussite = [row[4] for row in rows]
 
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS count
+        FROM messages
+        GROUP BY month
+        ORDER BY month ASC;
+        """)
+    rows = cursor.fetchall()
+    dates = [str(row[0]) for row in rows]
 
     data1 = {
         "labels": usernames,
@@ -103,6 +111,10 @@ def graph1():
         ]
     }
     options1 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Utilisateurs les plus actifs"
@@ -137,6 +149,10 @@ def graph1():
         ]
     }
     options2 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Proportion hommes-femmes"
@@ -177,6 +193,10 @@ def graph1():
     }
 
     options3 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Pays avec le plus grand nombre de ressortissants"
@@ -217,6 +237,10 @@ def graph1():
     }
 
     options4 = {
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        },
         "title": {
             "display": True,
             "text": "Pays avec le meilleur taux de réussite"
@@ -229,15 +253,61 @@ def graph1():
             }]
         }
     }
+    
+    data5 = {
+        "labels": dates,
+        "datasets": [
+            {
+                "label": "Nombre de messages",
+                "data": [row[1] for row in rows],
+                "backgroundColor": "rgba(255, 99, 132, 0.2)",
+                "borderColor": "rgba(255, 99, 132, 1)",
+                "borderWidth": 1
+            }
+        ]
+    }
+    options5 = {
+        "title": {
+            "display": True,
+            "text": "Nombre de messages par mois"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }],
+            "xAxes": [{
+                "type": "time",
+                "time": {
+                    "unit": "month",
+                    "displayFormats": {
+                        "month": "MMM YYYY"
+                    }
+                },
+                "ticks": {
+                    "autoSkip": True,
+                    "maxTicksLimit": 12
+                }
+            }]
+        },
+        "animation": {
+            "duration": 2000,
+            "easing": "easeInOutExpo"
+        }
+    }
+
+
 
     data = {'graph1': {'data': data1, 'options': options1},
             'graph2': {'data': data2, 'options': options2},
             'graph3': {'data': data3, 'options': options3},
-            'graph4': {'data': data4, 'options': options4}}
+            'graph4': {'data': data4, 'options': options4},
+            'graph5': {'data': data5, 'options': options5}}
 
 
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart3_id="myChart3", chart4_id="myChart4")
+    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart3_id="myChart3", chart4_id="myChart4", chart5_id="myChart5")
 
 
 

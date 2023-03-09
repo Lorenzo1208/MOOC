@@ -56,15 +56,21 @@
         <button id="show-graph2" class="btn btn-dark">Afficher le graphique de la répartition homme femme</button>
     </div>
 
-    <canvas id="{{ chart3_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart3_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
-        <button id="show-graph3">Afficher le graphique 3</button>
+        <button id="show-graph3" class="btn btn-dark">Afficher le graphique du nombre d'utilisateurs par pays</button>
     </div>
 
-    <canvas id="{{ chart4_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart4_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
-        <button id="show-graph4">Afficher le graphique 4</button>
+        <button id="show-graph4" class="btn btn-dark">Afficher le graphique du pourcentage de réussite par pays</button>
     </div>
+
+    <canvas id="{{ chart5_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
+    <div class="text-center">
+        <button id="show-graph5" class="btn btn-dark">Afficher le graphique du nombre de messages par mois</button>
+    </div>
+
     
     <script>
         var canvases = document.querySelectorAll('canvas.small-canvas');
@@ -74,6 +80,7 @@
         var isOpen2 = false;
         var isOpen3 = false;
         var isOpen4 = false;
+        var isOpen5 = false;
 
     
         // Button for chart 1
@@ -170,6 +177,32 @@
                 isOpen4 = true;
             }
         });
+
+
+
+
+
+        var showGraphButton5 = document.getElementById('show-graph5');
+        var chartData5 = chartData.graph5.data;
+        var chartOptions5 = chartData.graph5.options;
+        chartOptions5.responsive = false;
+        var ctx5 = document.getElementById('{{ chart5_id }}').getContext('2d');
+        var myChart5 = null;
+
+        showGraphButton5.addEventListener('click', function() {
+            if (isOpen5) {
+                myChart5.destroy();
+                isOpen5 = false;
+            } else {
+                myChart5 = new Chart(ctx5, {
+                    type: 'line',
+                    data: chartData5,
+                    options: chartOptions5
+                });
+                isOpen5 = true;
+            }
+        });
+        
     </script>
     
     
