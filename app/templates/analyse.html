@@ -30,11 +30,24 @@
     <div class="text-center">
         <button id="show-graph2">Afficher le graphique 2</button>
     </div>
+
+    <canvas id="{{ chart3_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <div class="text-center">
+        <button id="show-graph3">Afficher le graphique 3</button>
+    </div>
+
+    <canvas id="{{ chart4_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <div class="text-center">
+        <button id="show-graph4">Afficher le graphique 4</button>
+    </div>
     
     <script>
         var chartData = {{ data | tojson }};
         var isOpen1 = false;
         var isOpen2 = false;
+        var isOpen3 = false;
+        var isOpen4 = false;
+
     
         // Button for chart 1
         var showGraphButton1 = document.getElementById('show-graph1');
@@ -77,6 +90,53 @@
                     options: chartOptions2
                 });
                 isOpen2 = true;
+            }
+        });
+
+
+
+                // Button for chart 3
+        var showGraphButton3 = document.getElementById('show-graph3');
+        var chartData3 = chartData.graph3.data;
+        var chartOptions3 = chartData.graph3.options;
+        chartOptions3.responsive = false;
+        var ctx3 = document.getElementById('{{ chart3_id }}').getContext('2d');
+        var myChart3 = null;
+
+        showGraphButton3.addEventListener('click', function() {
+            if (isOpen3) {
+                myChart3.destroy();
+                isOpen3 = false;
+            } else {
+                myChart3 = new Chart(ctx3, {
+                    type: 'doughnut',
+                    data: chartData3,
+                    options: chartOptions3
+                });
+                isOpen3 = true;
+            }
+        });
+
+
+                        // Button for chart 4
+        var showGraphButton4 = document.getElementById('show-graph4');
+        var chartData4 = chartData.graph4.data;
+        var chartOptions4 = chartData.graph4.options;
+        chartOptions4.responsive = false;
+        var ctx4 = document.getElementById('{{ chart4_id }}').getContext('2d');
+        var myChart4 = null;
+
+        showGraphButton4.addEventListener('click', function() {
+            if (isOpen4) {
+                myChart4.destroy();
+                isOpen4 = false;
+            } else {
+                myChart4 = new Chart(ctx4, {
+                    type: 'polarArea',
+                    data: chartData4,
+                    options: chartOptions4
+                });
+                isOpen4 = true;
             }
         });
     </script>
