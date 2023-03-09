@@ -9,10 +9,10 @@ import pandas as pd
 model = joblib.load('ada_model.pkl')
 
 mydb = mysql.connector.connect(
-    host="localhost",
+    host="127.0.0.1",
     port=3306,
     user="root",
-    password="root",
+    password="greta2023",
     database="g4"
 )
 
@@ -23,9 +23,10 @@ def home():
     return render_template("home.html")
 
 @app.route("/analyse")
-def graph():
+def graph1():
     cursor = mydb.cursor()
-    cursor.execute("SELECT users.username, COUNT(*) as count FROM messages JOIN users ON messages.username = users.username GROUP BY users.username ORDER BY count DESC LIMIT 20")
+    cursor.execute("""SELECT users.username, COUNT(*) as count FROM messages JOIN users ON messages.username = users.username
+    GROUP BY users.username ORDER BY count DESC LIMIT 20""")
     rows = cursor.fetchall()
     usernames = [row[0] for row in rows]
     counts = [row[1] for row in rows]
@@ -36,10 +37,44 @@ def graph():
     COUNT(CASE WHEN users.gender = 'M' THEN 1 END) AS nb_hommes,
     COUNT(CASE WHEN users.gender = 'F' THEN 1 END) AS nb_femmes
     FROM 
-    users;""")
+    users""")
     rows = cursor.fetchall()
     nb_hommes = rows[0][0]
     nb_femmes = rows[0][1]
+
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT users.country, COUNT(*) as total FROM users JOIN result ON users.username = result.username
+    WHERE users.country IS NOT NULL AND users.country != ''  GROUP BY users.country ORDER BY total DESC LIMIT 15""")
+    rows = cursor.fetchall()
+    country = [row[0] for row in rows]
+    count_country = [row[1] for row in rows]
+
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT 
+    users.country,
+    COUNT(*) as total,
+    COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) AS nb_reussites,
+    COUNT(CASE WHEN result.Certificate_Eligible = 'N' THEN 1 END) AS nb_echecs,
+    100 * COUNT(CASE WHEN result.Certificate_Eligible = 'Y' THEN 1 END) / COUNT(*) AS proportion_reussite
+    FROM 
+        users
+    JOIN
+        result
+    ON
+        users.username = result.username
+    WHERE users.country IS NOT NULL AND users.country != ''
+    GROUP BY
+        users.country
+    HAVING 
+    total >= 5
+    ORDER BY
+        proportion_reussite DESC
+    LIMIT 15;
+    """)
+    rows = cursor.fetchall()
+    country2 = [row[0] for row in rows]
+    pourcentage_reussite = [row[4] for row in rows]
+
 
     data1 = {
         "labels": usernames,
@@ -114,12 +149,97 @@ def graph():
             }]
         }
     }
-    
-    data = {'graph1': {'data': data1, 'options': options1}, 
-            'graph2': {'data': data2, 'options': options2}}
-    
+
+
+    data3 = {
+        "labels": country,
+        "datasets": [
+            {
+                "label": "Nombre d'utilisateurs",
+                "data": count_country,
+                "backgroundColor": [
+                                       f'rgba({r},{g},{b},0.2)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                              (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                              (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                              (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                              (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                                   ][:len(country)],
+                "borderColor": [
+                                   f'rgba({r},{g},{b},1)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                        (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                        (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                        (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                               ][:len(country)],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options3 = {
+        "title": {
+            "display": True,
+            "text": "Pays avec le plus grand nombre de ressortissants"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+
+    data4 = {
+        "labels": country2,
+        "datasets": [
+            {
+                "label": "Pourcentage de réussite",
+                "data": pourcentage_reussite,
+                "backgroundColor": [
+                                       f'rgba({r},{g},{b},0.2)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                              (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                              (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                              (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                              (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                                   ][:len(country)],
+                "borderColor": [
+                                   f'rgba({r},{g},{b},1)' for r,g,b in [(255, 99, 132), (54, 162, 235), (255, 206, 86),
+                                                                        (75, 192, 192), (153, 102, 255), (255, 159, 64),
+                                                                        (255, 0, 0), (0, 255, 0), (0, 0, 255),
+                                                                        (255, 255, 0), (0, 255, 255), (255, 0, 255),
+                                                                        (128, 0, 0), (0, 128, 0), (0, 0, 128)]
+                               ][:len(country)],
+                "borderWidth": 1
+            }
+        ]
+    }
+
+    options4 = {
+        "title": {
+            "display": True,
+            "text": "Pays avec le meilleur taux de réussite"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+
+    data = {'graph1': {'data': data1, 'options': options1},
+            'graph2': {'data': data2, 'options': options2},
+            'graph3': {'data': data3, 'options': options3},
+            'graph4': {'data': data4, 'options': options4}}
+
+
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2")
+    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart3_id="myChart3", chart4_id="myChart4")
+
+
 
 
 from pycaret.utils import check_metric
