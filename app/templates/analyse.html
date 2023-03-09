@@ -26,9 +26,7 @@
           body {
             font-family: "Montserrat", sans-serif;
           }
-          
-          
-          
+        
           p {
             font-family: "Montserrat", sans-serif;
           }
@@ -46,6 +44,11 @@
     
     <h1>Analyse</h1>
     
+    <canvas id="{{ chart0_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
+    <div class="text-center">
+        <button id="show-graph0" class="btn btn-dark">Afficher le graphique du nombre de messages par mois</button>
+    </div>
+
     <canvas id="{{ chart1_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
         <button id="show-graph1" class="btn btn-dark">Afficher le graphique du nombre de messages</button>
@@ -56,12 +59,12 @@
         <button id="show-graph2" class="btn btn-dark">Afficher le graphique de la répartition homme femme</button>
     </div>
 
-    <canvas id="{{ chart21_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart21_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
-        <button id="show-graph21">Afficher le graphique du taux de réussite selon les genres</button>
+        <button id="show-graph21" class="btn btn-dark">Afficher le graphique du taux de réussite selon les genres</button>
     </div>
 
-    <canvas id="{{ chart3_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart3_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
         <button id="show-graph3" class="btn btn-dark">Afficher le graphique du nombre d'utilisateurs par pays</button>
     </div>
@@ -71,35 +74,91 @@
         <button id="show-graph4" class="btn btn-dark">Afficher le graphique du pourcentage de réussite par pays</button>
     </div>
 
-    <canvas id="{{ chart5_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
+    <canvas id="{{ chart6_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
-        <button id="show-graph5" class="btn btn-dark">Afficher le graphique du pourcentage de réussite par pays</button>
+        <button id="show-graph6" class="btn btn-dark">Afficher le graphique de la répartition des utilisateurs selon leur niveau d'éducation</button>
     </div>
 
-    <canvas id="{{ chart6_id }}" width="500" height="500" class="mx-auto"></canvas>
+    <canvas id="{{ chart7_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px;"></canvas>
     <div class="text-center">
-        <button id="show-graph6">Afficher le graphique 6</button>
-    </div>
-
-    <canvas id="{{ chart7_id }}" width="500" height="500" class="mx-auto"></canvas>
-    <div class="text-center">
-        <button id="show-graph7">Afficher le graphique 7</button>
+        <button id="show-graph7" class="btn btn-dark">Afficher le graphique du pourcentage de réussite par niveau d'éducation</button>
     </div>
     
     <script>
+
+
+          
+        var dates = [
+        "2014-02", "2014-03", "2014-04", "2014-05", "2014-06", "2014-07", "2014-08", "2014-09", "2014-10", "2014-11", "2014-12",
+        "2015-01", "2015-02", "2015-03", "2015-04", "2015-05", "2015-07", "2015-08", "2015-09", "2015-10", "2015-11", "2015-12",
+        "2016-01", "2016-02", "2016-03", "2016-04", "2016-05", "2016-06", "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12",
+        "2017-01", "2017-02", "2017-03", "2017-04", "2017-05", "2017-06", "2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12",
+        "2018-01", "2018-02", "2018-03", "2018-04", "2018-05", "2018-06", "2018-07", "2018-08", "2018-09", "2018-10", "2018-11", "2018-12",
+        "2019-01", "2019-02", "2019-03", "2019-04", "2019-05", "2019-06", "2019-07", "2019-08", "2019-09", "2019-10", "2019-11", "2019-12",
+        "2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06", "2020-07", "2020-08", "2020-09", "2020-10", "2020-11", "2020-12",
+        "2021-01", "2021-02", "2021-03", "2021-04", "2021-05", "2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12",
+        "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06"
+        ];
+        var counts = [
+        4484, 3307, 1429, 5419, 1785, 298, 5, 6, 451, 373, 98,
+        576, 971, 679, 455, 14,103,5,6,12,705,517,490,440,322,4008,5804,9939,4772,3416,2624,2805,3345,2327,4513,9421,9742,6366,8696,6533,2547,1450,7336,16196,16894,8513,
+        4150,1835,3233,5342,4816,5121,1747,50,1114,1813,3213,1247,4858,2105,1743,985,433,470,118,66,308,237,2374,1758,1456,434,375,1001,504,617,165,83,161,379,984,801,1507,
+        1040,367,697,765,1142,272,11,61,118,127,63,419,92,33,75,138,58];
+
+        var button = document.getElementById("show-graph0");
+        var chartData0 = {
+            labels: dates,
+            datasets: [{
+                label: "Répartition des messages par mois",
+                data: counts,
+                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                borderColor: "rgba(255, 99, 132, 1)",
+                borderWidth: 1
+            }]
+        };
+        var chartOptions0 = {
+            responsive: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        };
+        var ctx0 = document.getElementById('{{ chart0_id }}').getContext('2d');
+        var myChart0 = null;
+        var isOpen0 = false;
+
+        button.addEventListener('click', function() {
+            if (isOpen0) {
+                myChart0.destroy();
+                isOpen0 = false;
+                canvases[0].classList.add('small-canvas');
+            } else {
+                myChart0 = new Chart(ctx0, {
+                    type: 'line',
+                    data: chartData0,
+                    options: chartOptions0
+                });
+                isOpen0 = true;
+                canvases[0].classList.remove('small-canvas');
+            }
+        });
+
         var canvases = document.querySelectorAll('canvas.small-canvas');
     
         var chartData = {{ data | tojson }};
+        
         var isOpen1 = false;
         var isOpen2 = false;
         var isOpen21 = false;
         var isOpen3 = false;
         var isOpen4 = false;
-        var isOpen5 = false;
         var isOpen6 = false;
         var isOpen7 = false;
 
-    
+
         // Button for chart 1
         var showGraphButton1 = document.getElementById('show-graph1');
         var chartData1 = chartData.graph1.data;
@@ -215,31 +274,6 @@
                     options: chartOptions4
                 });
                 isOpen4 = true;
-            }
-        });
-
-
-
-
-
-        var showGraphButton5 = document.getElementById('show-graph5');
-        var chartData5 = chartData.graph5.data;
-        var chartOptions5 = chartData.graph5.options;
-        chartOptions5.responsive = false;
-        var ctx5 = document.getElementById('{{ chart5_id }}').getContext('2d');
-        var myChart5 = null;
-
-        showGraphButton5.addEventListener('click', function() {
-            if (isOpen5) {
-                myChart5.destroy();
-                isOpen5 = false;
-            } else {
-                myChart5 = new Chart(ctx5, {
-                    type: 'line',
-                    data: chartData5,
-                    options: chartOptions5
-                });
-                isOpen5 = true;
             }
         });
         

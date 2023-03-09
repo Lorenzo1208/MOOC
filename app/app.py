@@ -24,24 +24,26 @@ def home():
 
 @app.route("/analyse")
 def graph1():
+    
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS count
+        FROM messages
+        GROUP BY month
+        ORDER BY month ASC;
+        """)
+    rows = cursor.fetchall()
+    dates = [str(row[0]) for row in rows]
+    counts = [row[1] for row in rows]
+    cursor.close()
+
     cursor = mydb.cursor()
     cursor.execute("""SELECT users.username, COUNT(*) as count FROM messages JOIN users ON messages.username = users.username
     GROUP BY users.username ORDER BY count DESC LIMIT 20""")
     rows = cursor.fetchall()
     usernames = [row[0] for row in rows]
     counts = [row[1] for row in rows]
+    cursor.close()
     
-    
-    cursor = mydb.cursor()
-    cursor.execute("""SELECT 
-    COUNT(CASE WHEN users.gender = 'M' THEN 1 END) AS nb_hommes,
-    COUNT(CASE WHEN users.gender = 'F' THEN 1 END) AS nb_femmes
-    FROM 
-    users""")
-    rows = cursor.fetchall()
-    nb_hommes = rows[0][0]
-    nb_femmes = rows[0][1]
-
     cursor = mydb.cursor()
     cursor.execute("""SELECT 
         COUNT(CASE WHEN users.gender = 'M' THEN 1 END) AS nb_hommes2,
@@ -53,7 +55,7 @@ def graph1():
     nb_hommes = rows[0][0]
     nb_femmes = rows[0][1]
     nb_autre = rows[0][2]
-
+    cursor.close()
 
     cursor = mydb.cursor()
     cursor.execute("""SELECT 
@@ -70,7 +72,7 @@ def graph1():
     rows = cursor.fetchall()
     genre1 = [row[0] for row in rows]
     pourcent_reussite1 = [row[4] for row in rows]
-
+    cursor.close()
 
     cursor = mydb.cursor()
     cursor.execute("""SELECT users.country, COUNT(*) as total FROM users JOIN result ON users.username = result.username
@@ -78,7 +80,8 @@ def graph1():
     rows = cursor.fetchall()
     country = [row[0] for row in rows]
     count_country = [row[1] for row in rows]
-
+    cursor.close()
+    
     cursor = mydb.cursor()
     cursor.execute("""SELECT 
     users.country,
@@ -104,16 +107,8 @@ def graph1():
     rows = cursor.fetchall()
     country2 = [row[0] for row in rows]
     pourcentage_reussite = [row[4] for row in rows]
-
-    cursor = mydb.cursor()
-    cursor.execute("""SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS count
-        FROM messages
-        GROUP BY month
-        ORDER BY month ASC;
-        """)
-    rows = cursor.fetchall()
-    dates = [str(row[0]) for row in rows]
-
+    cursor.close()
+    
     cursor = mydb.cursor()
     cursor.execute("""SELECT users.level_of_education, COUNT(*) as total FROM users JOIN result ON users.username = result.username
     WHERE users.level_of_education IS NOT NULL AND users.level_of_education != '' AND users.level_of_education != 'None'
@@ -121,7 +116,7 @@ def graph1():
     rows = cursor.fetchall()
     level_of_education = [row[0] for row in rows]
     count_level = [row[1] for row in rows]
-
+    cursor.close()
 
     cursor = mydb.cursor()
     cursor.execute("""SELECT 
@@ -139,8 +134,29 @@ def graph1():
     rows = cursor.fetchall()
     level_of_education1 = [row[0] for row in rows]
     pourcent_reussite2 = [row[4] for row in rows]
+    cursor.close()
 
+    data0 = {
+        "labels": dates,
+        "datasets": [{
+            "label": '# of Messages',
+            "data": counts,
+            "backgroundColor": 'rgba(255, 99, 132, 0.2)',
+            "borderColor": 'rgba(255, 99, 132, 1)',
+            "borderWidth": 1
+        }]
+    }
+    options0 = {
+        "scales": {
+            "xAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
 
+    
     data1 = {
         "labels": usernames,
         "datasets": [
@@ -350,50 +366,6 @@ def graph1():
         }
     }
     
-    data5 = {
-        "labels": dates,
-        "datasets": [
-            {
-                "label": "Nombre de messages",
-                "data": [row[1] for row in rows],
-                "backgroundColor": "rgba(255, 99, 132, 0.2)",
-                "borderColor": "rgba(255, 99, 132, 1)",
-                "borderWidth": 1
-            }
-        ]
-    }
-    options5 = {
-        "title": {
-            "display": True,
-            "text": "Nombre de messages par mois"
-        },
-        "scales": {
-            "yAxes": [{
-                "ticks": {
-                    "beginAtZero": True
-                }
-            }],
-            "xAxes": [{
-                "type": "time",
-                "time": {
-                    "unit": "month",
-                    "displayFormats": {
-                        "month": "MMM YYYY"
-                    }
-                },
-                "ticks": {
-                    "autoSkip": True,
-                    "maxTicksLimit": 12
-                }
-            }]
-        },
-        "animation": {
-            "duration": 2000,
-            "easing": "easeInOutExpo"
-        }
-    }
-
-
 
     data6 = {
         "labels": level_of_education,
@@ -476,7 +448,8 @@ def graph1():
 
 
 
-    data = {'graph1': {'data': data1, 'options': options1},
+    data = {'graph0': {'data': data0, 'options': options0},
+            'graph1': {'data': data1, 'options': options1},
             'graph2': {'data': data2, 'options': options2},
             'graph21': {'data': data21, 'options': options21},
             'graph3': {'data': data3, 'options': options3},
@@ -486,7 +459,7 @@ def graph1():
 
 
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4", chart6_id="myChart6", chart7_id="myChart7")
+    return render_template("analyse.html", data=data, chart0_id="myChart0", chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4",chart6_id="myChart6", chart7_id="myChart7")
 
 
 
