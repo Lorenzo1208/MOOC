@@ -29,8 +29,19 @@ def graph():
     rows = cursor.fetchall()
     usernames = [row[0] for row in rows]
     counts = [row[1] for row in rows]
+    
+    
+    cursor = mydb.cursor()
+    cursor.execute("""SELECT 
+    COUNT(CASE WHEN users.gender = 'M' THEN 1 END) AS nb_hommes,
+    COUNT(CASE WHEN users.gender = 'F' THEN 1 END) AS nb_femmes
+    FROM 
+    users;""")
+    rows = cursor.fetchall()
+    nb_hommes = rows[0][0]
+    nb_femmes = rows[0][1]
 
-    data = {
+    data1 = {
         "labels": usernames,
         "datasets": [
             {
@@ -56,7 +67,7 @@ def graph():
             }
         ]
     }
-    options = {
+    options1 = {
         "title": {
             "display": True,
             "text": "Utilisateurs les plus actifs"
@@ -69,9 +80,48 @@ def graph():
             }]
         }
     }
-
+    
+    
+    
+    data2 = {
+        "labels": ['Hommes', 'Femmes'],
+        "datasets": [
+            {
+                "label": "Proportion hommes-femmes",
+                "data": [nb_hommes, nb_femmes],
+                "backgroundColor": [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                "borderColor": [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                "borderWidth": 1
+            }
+        ]
+    }
+    options2 = {
+        "title": {
+            "display": True,
+            "text": "Proportion hommes-femmes"
+        },
+        "scales": {
+            "yAxes": [{
+                "ticks": {
+                    "beginAtZero": True
+                }
+            }]
+        }
+    }
+    
+    data = {'graph1': {'data': data1, 'options': options1}, 
+            'graph2': {'data': data2, 'options': options2}}
+    
+    
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, options=options)
+    return render_template("analyse.html", data=data, chart1_id="myChart1", chart2_id="myChart2")
+
 
 from pycaret.utils import check_metric
 from pycaret.classification import predict_model

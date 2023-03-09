@@ -9,7 +9,6 @@
         h1 {
             text-align: center;
         }
-
     </style>
 </head>
 <body>
@@ -22,34 +21,65 @@
 
     <h1>Analyse</h1>
     
-    <canvas id="myChart"></canvas>
-    
+    <canvas id="{{ chart1_id }}" width="500" height="500"></canvas>
     <div class="text-center">
-        <button id="show-graph">Afficher le graphique</button>
+        <button id="show-graph1">Afficher le graphique 1</button>
     </div>
     
-
+    <canvas id="{{ chart2_id }}" width="500" height="500"></canvas>
+    <div class="text-center">
+        <button id="show-graph2">Afficher le graphique 2</button>
+    </div>
+    
     <script>
-        var showGraphButton = document.getElementById('show-graph');
         var chartData = {{ data | tojson }};
-        var chartOptions = {{ options | tojson }};
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = null;
-        var isOpen = false;
-
-        showGraphButton.addEventListener('click', function() {
-            if (isOpen) {
-                myChart.destroy();
-                isOpen = false;
+        var isOpen1 = false;
+        var isOpen2 = false;
+    
+        // Button for chart 1
+        var showGraphButton1 = document.getElementById('show-graph1');
+        var chartData1 = chartData.graph1.data;
+        var chartOptions1 = chartData.graph1.options;
+        chartOptions1.responsive = false;
+        var ctx1 = document.getElementById('{{ chart1_id }}').getContext('2d');
+        var myChart1 = null;
+        
+        showGraphButton1.addEventListener('click', function() {
+            if (isOpen1) {
+                myChart1.destroy();
+                isOpen1 = false;
             } else {
-                myChart = new Chart(ctx, {
+                myChart1 = new Chart(ctx1, {
                     type: 'bar',
-                    data: chartData,
-                    options: chartOptions
+                    data: chartData1,
+                    options: chartOptions1
                 });
-                isOpen = true;
+                isOpen1 = true;
+            }
+        });
+    
+        // Button for chart 2
+        var showGraphButton2 = document.getElementById('show-graph2');
+        var chartData2 = chartData.graph2.data;
+        var chartOptions2 = chartData.graph2.options;
+        chartOptions2.responsive = false;
+        var ctx2 = document.getElementById('{{ chart2_id }}').getContext('2d');
+        var myChart2 = null;
+        
+        showGraphButton2.addEventListener('click', function() {
+            if (isOpen2) {
+                myChart2.destroy();
+                isOpen2 = false;
+            } else {
+                myChart2 = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: chartData2,
+                    options: chartOptions2
+                });
+                isOpen2 = true;
             }
         });
     </script>
+    
 </body>
 </html>
