@@ -923,7 +923,6 @@ def graph():
             'graph7': {'data': data7, 'options': options7}}
 
 
-    # Pass the data and options to the template
     return render_template("a.html", data=data, chart0_id="myChart0", chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4",chart6_id="myChart6", chart7_id="myChart7")
 
 
@@ -942,7 +941,6 @@ def prediction():
         messages = request.form['messages']
         course_id = request.form['course_id']
         
-        # Create a dataframe with the input features
         input_df = pd.DataFrame({
             'city': [ville] if ville else [''],
             'country': [pays] if pays else [''],
@@ -956,20 +954,16 @@ def prediction():
         })
         
 
-        # Make a prediction using the preprocessed input features
         prediction = predict_model(model, data=input_df)
         prediction = prediction['Label'][0]
         
-        # modify the prediction value based on the condition
         if prediction == 'Y':
             prediction = '''Continue comme ça ! La prédiction indique que tu as de grandes chances d'obtenir ton diplôme.'''
         elif prediction == 'N':
             prediction = '''Désolé, la prédiction indique que vous n'obtiendrez pas votre diplôme.'''
-        
-        # Render the prediction result
+
         return render_template('prediction.html', prediction=prediction)
 
-    # Render the form
     return render_template('prediction.html')
 
 if __name__ == '__main__':
