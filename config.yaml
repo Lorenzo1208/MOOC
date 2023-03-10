@@ -1,0 +1,11 @@
+mysql:
+  host: localhost
+  port: 3306
+  user: root
+  password: greta2023
+  database: g4
+
+mongo:
+  host: localhost
+  port: 27017
+  database: g4-MOOC

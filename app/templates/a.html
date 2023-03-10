@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Analyse</title>
+    <!-- Inclure la bibliothèque Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Inclure la bibliothèque jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        h1 {
+            text-align: center;
+            margin-top: 20px; /* ajustez la valeur en fonction de vos besoins */
+        }
+    
+        canvas.small-canvas {
+            width: 20px;
+            height: 20px;
+        }
+        .navbar .nav-link {
+            margin-right: 10px;
+            font-family: "Montserrat", sans-serif;
+        }
+          .navbar .nav-link:last-child {
+            margin-right: 0;
+          }
+
+          body {
+            font-family: "Montserrat", sans-serif;
+          }
+        
+          p {
+            font-family: "Montserrat", sans-serif;
+          }
+          
+          .graph-container.hide {
+            height: 0px;
+          }
+          /* Style pour le label */
+          label {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+          }
+          
+          /* Style pour le select */
+          select {
+            padding: 0.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+            color: #333;
+          }
+          
+          /* Style pour les options */
+          option {
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #f5f5f5;
+            color: #333;
+          }
+          
+          
+    </style>
+    </head>
+    <body>
+    
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="nav-link btn btn-dark" href="/">Accueil</a>
+            <a class="nav-link btn btn-dark" href="/analyse">Analyse</a>
+            <a class="nav-link btn btn-dark" href="/prediction">Prédiction</a>
+            <a class="nav-link btn btn-dark" href="/graph">En construction</a>
+        </nav>
+        
+    
+        <h1>Analyse</h1>
+        <div class="text-center">
+            <label for="select-graph">Choisir un graphique:</label>
+            <select id="chartType">
+                <option value="bar">Nombre de messages</option>
+                <option value="doughnut">Répartition homme femme</option>
+                <option value="barchart2">Taux de réussite selon les genres</option>
+                <option value="doughnut2">Nombre d'utilisateurs par pays</option>
+                <option value="polararea">Pourcentage de réussite par pays</option>
+                
+                <option value="polararea2">Pourcentage de réussite par niveau d'éducation</option>
+            </select>
+            <div class="chart_container">
+                <canvas id="barChart"></canvas>
+                <canvas id="doughnutChart"></canvas>
+                <canvas id="barChart2"></canvas>
+                <canvas id="doughnutChart2"></canvas>
+                <canvas id="polarArea"></canvas>
+                <canvas id="doughnutChart3"></canvas>
+                <canvas id="polarArea2"></canvas>
+            </div>
+        </div>
+        
+        <div id="graph1" class="graph-container hide">
+            <canvas id="{{ chart1_id }}"></canvas>
+          </div>
+          <div id="graph2" class="graph-container hide">
+            <canvas id="{{ chart2_id }}"></canvas>
+          </div>
+          <div id="graph3" class="graph-container hide">
+            <canvas id="{{ chart21_id }}"></canvas>
+          </div>
+          <div id="graph4" class="graph-container hide">
+            <canvas id="{{ chart3_id }}"></canvas>
+          </div>
+          <div id="graph5" class="graph-container hide">
+            <canvas id="{{ chart4_id }}"></canvas>
+          </div>
+          <div id="graph6" class="graph-container hide">
+            <canvas id="{{ chart6_id }}"></canvas>
+          </div>
+          <div id="graph7" class="graph-container hide">
+            <canvas id="{{ chart7_id }}"></canvas>
+          </div>
+          
+
+        
+<script>
+    var chartData = {{ data | tojson | safe }};
+    let select = document.querySelector('#chartType');
+    let chartContainer = document.querySelector('.chart_container');
+    let currentChart = null; // stocker la référence du chart actuellement affiché
+    
+    select.addEventListener('change', showHide);
+    
+    function showHide() {
+        let chartType = this.value;
+        chartContainer.querySelectorAll('canvas').forEach(c => {
+          c.style.display = (c.id === chartType + 'Chart') ? 'inherit' : 'none';
+        });
+      
+        // détruire le chart actuellement affiché s'il y en a un
+        if (currentChart) {
+          currentChart.destroy();
+        }
+      
+        // ajouter ou retirer la classe hide en fonction de la valeur sélectionnée
+        let graphContainers = document.querySelectorAll('.graph-container');
+        graphContainers.forEach(gc => {
+          if (gc.id === 'graph' + chartType.charAt(chartType.length-1)) {
+            gc.classList.remove('hide');
+          } else {
+            gc.classList.add('hide');
+          }
+        });
+      
+        
+                // créer le nouveau chart correspondant à la valeur sélectionnée
+    switch (chartType) {
+        case 'bar':
+            var chartData1 = chartData.graph1.data;
+            var chartOptions1 = chartData.graph1.options;
+            chartOptions1.animation = {
+                duration: 4000 // ajouter une animation duration de 4000 ms
+            };
+            var ctx1 = document.getElementById('{{ chart1_id }}').getContext('2d');
+            var newChart = new Chart(ctx1, {
+                type: 'bar',
+                data: chartData1,
+                options: chartOptions1
+            });
+            break;
+        case 'doughnut':
+            var chartData2 = chartData.graph2.data;
+            var chartOptions2 = chartData.graph2.options;
+            
+            var ctx2 = document.getElementById('{{ chart2_id }}').getContext('2d');
+            var newChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: chartData2,
+                options: chartOptions2
+            });
+            break;
+        case 'barchart2':
+            
+            var chartData3 = chartData.graph21.data;
+            var chartOptions3 = chartData.graph21.options;
+            var ctx21 = document.getElementById('{{ chart21_id }}').getContext('2d');
+            var newChart = new Chart(ctx21, {
+                type: 'bar',
+                data: chartData3,
+                options: chartOptions3
+            });
+            break;
+                    case 'doughnut2':
+                    
+                    var chartData4 = chartData.graph3.data;
+                    var chartOptions4 = chartData.graph3.options;
+                    var ctx3 = document.getElementById('{{ chart3_id }}').getContext('2d');
+                    var newChart = new Chart(ctx3, {
+                        type: 'doughnut',
+                        data: chartData4,
+                        options: chartOptions4
+                    });
+                        break;
+                    case 'polararea':
+                    
+                    var chartData5 = chartData.graph4.data;
+                    var chartOptions5 = chartData.graph4.options;
+                    var ctx4 = document.getElementById('{{ chart4_id }}').getContext('2d');
+                    var newChart = new Chart(ctx4, {
+                        type: 'polarArea',
+                        data: chartData5,
+                        options: chartOptions5
+                    });
+                        break;
+                    case 'doughnut2':
+                    
+                    var chartData6 = chartData.graph6.data;
+                    var chartOptions6 = chartData.graph6.options;
+                    var ctx6 = document.getElementById('{{ chart6_id }}').getContext('2d');
+                    var newChart = new Chart(ctx6, {
+                        type: 'doughnut',
+                        data: chartData6,
+                        options: chartOptions6
+                    });
+                        break;
+                    case 'polararea2':
+                    
+                    var chartData7 = chartData.graph7.data;
+                    var chartOptions7 = chartData.graph7.options;
+                    var ctx7 = document.getElementById('{{ chart7_id }}').getContext('2d');
+                    var newChart = new Chart(ctx7, {
+                        type: 'polarArea',
+                        data: chartData7,
+                        options: chartOptions7
+                    });
+                        break;
+                }
+                currentChart = newChart;
+            }
+        </script>
+        
+        
+        
+</body>
+</html>
