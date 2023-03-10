@@ -3,7 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>Analyse</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Inclure la bibliothèque Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Inclure la bibliothèque jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         h1 {
@@ -31,6 +35,36 @@
             font-family: "Montserrat", sans-serif;
           }
           
+          .graph-container.hide {
+            height: 0px;
+          }
+          /* Style pour le label */
+          label {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+          }
+          
+          /* Style pour le select */
+          select {
+            padding: 0.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+            color: #333;
+          }
+          
+          /* Style pour les options */
+          option {
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #f5f5f5;
+            color: #333;
+          }
+          
+          
     </style>
     </head>
     <body>
@@ -39,98 +73,174 @@
             <a class="nav-link btn btn-dark" href="/">Accueil</a>
             <a class="nav-link btn btn-dark" href="/analyse">Analyse</a>
             <a class="nav-link btn btn-dark" href="/prediction">Prédiction</a>
+            <a class="nav-link btn btn-dark" href="/graph">En construction</a>
         </nav>
         
     
-    <h1>Analyse</h1>
-    <div class="text-center">
-        <label for="select-graph">Choisir un graphique:</label>
-        <select id="select-graph">
-            <option value="1">Nombre de messages</option>
-            <option value="2">Répartition homme femme</option>
-            <option value="21">Taux de réussite selon les genres</option>
-            <option value="3">Nombre d'utilisateurs par pays</option>
-            <option value="4">Pourcentage de réussite par pays</option>
-            <option value="6">Répartition des utilisateurs selon leur niveau d'éducation</option>
-            <option value="7">Pourcentage de réussite par niveau d'éducation</option>
-        </select>
-    </div>
+        <h1>Analyse</h1>
+        <div class="text-center">
+            <label for="select-graph">Choisir un graphique:</label>
+            <select id="chartType">
+                <option value="bar">Nombre de messages</option>
+                <option value="doughnut">Répartition homme femme</option>
+                <option value="barchart2">Taux de réussite selon les genres</option>
+                <option value="doughnut2">Nombre d'utilisateurs par pays</option>
+                <option value="polararea">Pourcentage de réussite par pays</option>
+                
+                <option value="polararea2">Pourcentage de réussite par niveau d'éducation</option>
+            </select>
+            <div class="chart_container">
+                <canvas id="barChart"></canvas>
+                <canvas id="doughnutChart"></canvas>
+                <canvas id="barChart2"></canvas>
+                <canvas id="doughnutChart2"></canvas>
+                <canvas id="polarArea"></canvas>
+                <canvas id="doughnutChart3"></canvas>
+                <canvas id="polarArea2"></canvas>
+            </div>
+        </div>
+        
+        <div id="graph1" class="graph-container hide">
+            <canvas id="{{ chart1_id }}"></canvas>
+          </div>
+          <div id="graph2" class="graph-container hide">
+            <canvas id="{{ chart2_id }}"></canvas>
+          </div>
+          <div id="graph3" class="graph-container hide">
+            <canvas id="{{ chart21_id }}"></canvas>
+          </div>
+          <div id="graph4" class="graph-container hide">
+            <canvas id="{{ chart3_id }}"></canvas>
+          </div>
+          <div id="graph5" class="graph-container hide">
+            <canvas id="{{ chart4_id }}"></canvas>
+          </div>
+          <div id="graph6" class="graph-container hide">
+            <canvas id="{{ chart6_id }}"></canvas>
+          </div>
+          <div id="graph7" class="graph-container hide">
+            <canvas id="{{ chart7_id }}"></canvas>
+          </div>
+          
 
-    <div id="graph-container">
+        
+<script>
+    var chartData = {{ data | tojson | safe }};
+    let select = document.querySelector('#chartType');
+    let chartContainer = document.querySelector('.chart_container');
+    let currentChart = null; // stocker la référence du chart actuellement affiché
     
-        <canvas id="{{ chart1_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-        <canvas id="{{ chart2_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-        <canvas id="{{ chart21_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-        <canvas id="{{ chart3_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-        <canvas id="{{ chart4_id }}" width="600" height="600" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-        <canvas id="{{ chart6_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-        <canvas id="{{ chart7_id }}" width="500" height="500" class="mx-auto small-canvas" style="margin-bottom: 20px; display:none;"></canvas>
-    </div>
-    <script>
-
-        var dates = [
-        "2014-02", "2014-03", "2014-04", "2014-05", "2014-06", "2014-07", "2014-08", "2014-09", "2014-10", "2014-11", "2014-12",
-        "2015-01", "2015-02", "2015-03", "2015-04", "2015-05", "2015-07", "2015-08", "2015-09", "2015-10", "2015-11", "2015-12",
-        "2016-01", "2016-02", "2016-03", "2016-04", "2016-05", "2016-06", "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12",
-        "2017-01", "2017-02", "2017-03", "2017-04", "2017-05", "2017-06", "2017-07", "2017-08", "2017-09", "2017-10", "2017-11", "2017-12",
-        "2018-01", "2018-02", "2018-03", "2018-04", "2018-05", "2018-06", "2018-07", "2018-08", "2018-09", "2018-10", "2018-11", "2018-12",
-        "2019-01", "2019-02", "2019-03", "2019-04", "2019-05", "2019-06", "2019-07", "2019-08", "2019-09", "2019-10", "2019-11", "2019-12",
-        "2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06", "2020-07", "2020-08", "2020-09", "2020-10", "2020-11", "2020-12",
-        "2021-01", "2021-02", "2021-03", "2021-04", "2021-05", "2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12",
-        "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06"
-        ];
-        var counts = [
-        4484, 3307, 1429, 5419, 1785, 298, 5, 6, 451, 373, 98,
-        576, 971, 679, 455, 14,103,5,6,12,705,517,490,440,322,4008,5804,9939,4772,3416,2624,2805,3345,2327,4513,9421,9742,6366,8696,6533,2547,1450,7336,16196,16894,8513,
-        4150,1835,3233,5342,4816,5121,1747,50,1114,1813,3213,1247,4858,2105,1743,985,433,470,118,66,308,237,2374,1758,1456,434,375,1001,504,617,165,83,161,379,984,801,1507,
-        1040,367,697,765,1142,272,11,61,118,127,63,419,92,33,75,138,58];
-
-        var chartData = {{ data | tojson | safe }};
-
-
-var chartObjects = [];
-var canvasIds = ["{{ chart1_id }}", "{{ chart2_id }}", "{{ chart21_id }}", "{{ chart3_id }}", "{{ chart4_id }}", "{{ chart6_id }}", "{{ chart7_id }}"];
-
-function hideAllGraphs() {
-  for (var i = 0; i < canvasIds.length; i++) {
-    var canvas = document.getElementById(canvasIds[i]);
-    if (canvas) {
-      canvas.style.display = 'none';
-    }
-  }
-}
-
-function showGraph(index) {
-  hideAllGraphs();
-  var canvas = document.getElementById(canvasIds[index]);
-  if (canvas) {
-    canvas.style.display = 'block';
-    var chartData = chartData['graph' + index].data;
-    var chartOptions = chartData['graph' + index].options;
-    chartOptions.responsive = false;
-    var ctx = canvas.getContext('2d');
-    if (chartObjects[index]) {
-      chartObjects[index].destroy();
-    }
-    chartObjects[index] = new Chart(ctx, {
-      type: chartData.type,
-      data: chartData,
-      options: chartOptions
-    });
-  }
-}
-
-var selectGraph = document.getElementById('select-graph');
-selectGraph.addEventListener('change', function() {
-  var index = this.value;
-  showGraph(index);
-});
-
-hideAllGraphs();
-
-
-    </script>
+    select.addEventListener('change', showHide);
     
-    
+    function showHide() {
+        let chartType = this.value;
+        chartContainer.querySelectorAll('canvas').forEach(c => {
+          c.style.display = (c.id === chartType + 'Chart') ? 'inherit' : 'none';
+        });
+      
+        // détruire le chart actuellement affiché s'il y en a un
+        if (currentChart) {
+          currentChart.destroy();
+        }
+      
+        // ajouter ou retirer la classe hide en fonction de la valeur sélectionnée
+        let graphContainers = document.querySelectorAll('.graph-container');
+        graphContainers.forEach(gc => {
+          if (gc.id === 'graph' + chartType.charAt(chartType.length-1)) {
+            gc.classList.remove('hide');
+          } else {
+            gc.classList.add('hide');
+          }
+        });
+      
+        
+                // créer le nouveau chart correspondant à la valeur sélectionnée
+    switch (chartType) {
+        case 'bar':
+            var chartData1 = chartData.graph1.data;
+            var chartOptions1 = chartData.graph1.options;
+            chartOptions1.animation = {
+                duration: 4000 // ajouter une animation duration de 4000 ms
+            };
+            var ctx1 = document.getElementById('{{ chart1_id }}').getContext('2d');
+            var newChart = new Chart(ctx1, {
+                type: 'bar',
+                data: chartData1,
+                options: chartOptions1
+            });
+            break;
+        case 'doughnut':
+            var chartData2 = chartData.graph2.data;
+            var chartOptions2 = chartData.graph2.options;
+            
+            var ctx2 = document.getElementById('{{ chart2_id }}').getContext('2d');
+            var newChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: chartData2,
+                options: chartOptions2
+            });
+            break;
+        case 'barchart2':
+            
+            var chartData3 = chartData.graph21.data;
+            var chartOptions3 = chartData.graph21.options;
+            var ctx21 = document.getElementById('{{ chart21_id }}').getContext('2d');
+            var newChart = new Chart(ctx21, {
+                type: 'bar',
+                data: chartData3,
+                options: chartOptions3
+            });
+            break;
+                    case 'doughnut2':
+                    
+                    var chartData4 = chartData.graph3.data;
+                    var chartOptions4 = chartData.graph3.options;
+                    var ctx3 = document.getElementById('{{ chart3_id }}').getContext('2d');
+                    var newChart = new Chart(ctx3, {
+                        type: 'doughnut',
+                        data: chartData4,
+                        options: chartOptions4
+                    });
+                        break;
+                    case 'polararea':
+                    
+                    var chartData5 = chartData.graph4.data;
+                    var chartOptions5 = chartData.graph4.options;
+                    var ctx4 = document.getElementById('{{ chart4_id }}').getContext('2d');
+                    var newChart = new Chart(ctx4, {
+                        type: 'polarArea',
+                        data: chartData5,
+                        options: chartOptions5
+                    });
+                        break;
+                    case 'doughnut2':
+                    
+                    var chartData6 = chartData.graph6.data;
+                    var chartOptions6 = chartData.graph6.options;
+                    var ctx6 = document.getElementById('{{ chart6_id }}').getContext('2d');
+                    var newChart = new Chart(ctx6, {
+                        type: 'doughnut',
+                        data: chartData6,
+                        options: chartOptions6
+                    });
+                        break;
+                    case 'polararea2':
+                    
+                    var chartData7 = chartData.graph7.data;
+                    var chartOptions7 = chartData.graph7.options;
+                    var ctx7 = document.getElementById('{{ chart7_id }}').getContext('2d');
+                    var newChart = new Chart(ctx7, {
+                        type: 'polarArea',
+                        data: chartData7,
+                        options: chartOptions7
+                    });
+                        break;
+                }
+                currentChart = newChart;
+            }
+        </script>
+        
+        
+        
 </body>
 </html>

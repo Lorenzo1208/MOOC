@@ -1240,3 +1240,164 @@
                                     random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
 2023-03-10 00:12:18,644:INFO:Checking exceptions
 2023-03-10 00:12:18,644:INFO:Preloading libraries
+2023-03-10 12:26:16,283:INFO:Initializing predict_model()
+2023-03-10 12:26:16,284:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 12:26:16,285:INFO:Checking exceptions
+2023-03-10 12:26:16,285:INFO:Preloading libraries
+2023-03-10 12:26:18,949:INFO:Initializing predict_model()
+2023-03-10 12:26:18,950:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 12:26:18,950:INFO:Checking exceptions
+2023-03-10 12:26:18,950:INFO:Preloading libraries
+2023-03-10 12:26:19,145:INFO:Initializing predict_model()
+2023-03-10 12:26:19,146:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 12:26:19,147:INFO:Checking exceptions
+2023-03-10 12:26:19,148:INFO:Preloading libraries
+2023-03-10 12:32:36,304:INFO:Initializing predict_model()
+2023-03-10 12:32:36,305:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 12:32:36,306:INFO:Checking exceptions
+2023-03-10 12:32:36,306:INFO:Preloading libraries
+2023-03-10 12:32:45,104:INFO:Initializing predict_model()
+2023-03-10 12:32:45,104:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 12:32:45,104:INFO:Checking exceptions
+2023-03-10 12:32:45,104:INFO:Preloading libraries
+2023-03-10 13:18:14,327:INFO:Initializing predict_model()
+2023-03-10 13:18:14,327:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 13:18:14,327:INFO:Checking exceptions
+2023-03-10 13:18:14,327:INFO:Preloading libraries
+2023-03-10 13:21:11,955:INFO:Initializing predict_model()
+2023-03-10 13:21:11,955:INFO:predict_model(estimator=Pipeline(steps=[('dtypes',
+                 DataTypes_Auto_infer(ml_usecase='classification',
+                                      target='Certificate_Delivered')),
+                ('imputer',
+                 Simple_Imputer(categorical_strategy='not_available',
+                                fill_value_categorical=None,
+                                fill_value_numerical=None,
+                                numeric_strategy='mean',
+                                target_variable=None)),
+                ('new_levels1',
+                 New_Catagorical_Levels_in_TestData(replacement_strategy='least '...
+                ('cluster_all', 'passthrough'),
+                ('dummy', Dummify(target='Certificate_Delivered')),
+                ('fix_perfect', Remove_100(target='Certificate_Delivered')),
+                ('clean_names', Clean_Colum_Names()),
+                ('feature_select', 'passthrough'), ('fix_multi', 'passthrough'),
+                ('dfs', 'passthrough'), ('pca', 'passthrough'),
+                ['trained_model',
+                 AdaBoostClassifier(learning_rate=0.1, n_estimators=100,
+                                    random_state=885)]]), probability_threshold=None, encoded_labels=False, drift_report=False, raw_score=False, round=4, verbose=True, ml_usecase=MLUsecase.CLASSIFICATION, display=None, drift_kwargs=None)
+2023-03-10 13:21:11,955:INFO:Checking exceptions
+2023-03-10 13:21:11,956:INFO:Preloading libraries
