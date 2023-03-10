@@ -471,7 +471,7 @@ def graph1():
 
 
     # Pass the data and options to the template
-    return render_template("analyse.html", data=data, chart0_id="myChart0", chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4",chart6_id="myChart6", chart7_id="myChart7")
+    return render_template("a.html", data=data, chart0_id="myChart0", chart1_id="myChart1", chart2_id="myChart2", chart21_id="myChart21", chart3_id="myChart3", chart4_id="myChart4",chart6_id="myChart6", chart7_id="myChart7")
 
 
 
